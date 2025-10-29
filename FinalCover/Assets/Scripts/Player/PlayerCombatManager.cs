@@ -20,17 +20,26 @@ public class PlayerCombatManager : CharacterCombatManager
         player = GetComponent<PlayerManager>();
     }
 
+    public void PerformWeaponBasedAction(WeaponItemAction weaponAction, WeaponItem weaponPerformingAction)
+    {
+        if (player)
+        {
+            //perform the action here
+            weaponAction.AttemptToPerformAction(player, weaponPerformingAction);
+        }
+    }
+
     public override void EnableCanDoCombo()
     {
         base.EnableCanDoCombo();
         canComboWithMainHandWeapon = true;
     }
-
     public override void DisableCanDoCombo()
     {
         base.DisableCanDoCombo();
         canComboWithMainHandWeapon = false;
     }
+
     public override void SetTarget(CharacterManager newTarget)
     {
         base.SetTarget(newTarget);
@@ -40,6 +49,7 @@ public class PlayerCombatManager : CharacterCombatManager
             //PlayerCamera.instance.SetNewTargetAsLookAtTarget(newTarget);
         }
     }
+
     public void SetCharacterActionHand(bool rightHandedAction)
     {
         if (rightHandedAction)
@@ -64,7 +74,6 @@ public class PlayerCombatManager : CharacterCombatManager
             PlayerUIManager.instance.playerHUDManager.SetRightWeaponQuickSlotIcon(newID);
         }
     }
-
     public void OnCurrentLeftHandWeaponIDChange(string oldID, string newID)
     {
         WeaponItem newWeapon = Instantiate(WorldItemDataBase.instance.GetWeaponByID(newID));
@@ -75,7 +84,6 @@ public class PlayerCombatManager : CharacterCombatManager
             PlayerUIManager.instance.playerHUDManager.SetLeftWeaponQuickSlotIcon(newID);
         }
     }
-
     public void OnCurrentWeaponBeingUsedIDChange(string oldID, string newID)
     {
         WeaponItem newWeapon = Instantiate(WorldItemDataBase.instance.GetWeaponByID(newID));
@@ -83,7 +91,7 @@ public class PlayerCombatManager : CharacterCombatManager
 
     }
 
-    private void PerformWeaponAction(string actionID, string weaponID)
+    public void PerformWeaponAction(string actionID, string weaponID)
     {
         WeaponItemAction weaponAction = WorldActionManager.instance.GetWeaponItemActionByID(actionID);
 

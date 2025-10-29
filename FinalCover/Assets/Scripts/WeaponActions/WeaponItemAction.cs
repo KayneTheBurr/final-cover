@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Character Actions/Weapon Action")]
+[CreateAssetMenu(menuName = "Character Actions/Weapon Actions")]
 public class WeaponItemAction : ScriptableObject
 {
     public string actionID;

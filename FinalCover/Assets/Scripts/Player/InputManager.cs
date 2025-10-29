@@ -13,7 +13,12 @@ public class InputManager : MonoBehaviour
     public float vertical_Input;
     public float moveAmount;
 
-    [Header("Bumper (R1/L1) Inputs")]
+    [Header("Camera Inputs")]
+    [SerializeField] Vector2 camera_Input;
+    public float camVerticalInput;
+    public float camHorizontalInput;
+
+    [Header("Attack (R1/R2) Inputs")]
     [SerializeField] bool lightAttck_Input = false;
     [SerializeField] bool heavyAttack_Input = false;
     [SerializeField] bool charge_HA_Input = false;
@@ -22,6 +27,16 @@ public class InputManager : MonoBehaviour
     [SerializeField] bool dodge_Input = false;
     [SerializeField] bool sprint_Input = false;
     [SerializeField] bool jump_Input = false;
+
+    [Header("Lock On")]
+    [SerializeField] bool lockOn_Input = false;
+    [SerializeField] bool lockOn_Left_Input = false;
+    [SerializeField] bool lockOn_Right_Input = false;
+    private Coroutine lockOnCoroutine;
+
+    [Header("Quick Slot Inputs")]
+    [SerializeField] bool switch_Right_Weapon_Input = false;
+    [SerializeField] bool switch_Left_Weapon_Input = false;
 
     [Header("Qued Inputs")]
     [SerializeField] float que_Input_Timer = 0;
@@ -44,7 +59,7 @@ public class InputManager : MonoBehaviour
     }
     private void OnSceneChange(Scene oldScene, Scene newScene)
     {
-
+        Debug.Log(newScene.buildIndex);
         //when moving from menu scene to main gameplay scene, enable controls
         if (newScene.buildIndex == 1)
         {
@@ -70,7 +85,7 @@ public class InputManager : MonoBehaviour
             playerControls = new PlayerControls();
 
             playerControls.PlayerMovement.Move.performed += i => movement_Input = i.ReadValue<Vector2>();
-            //playerControls.PlayerCamera.CameraControls.performed += i => camera_Input = i.ReadValue<Vector2>();
+            playerControls.PlayerMovement.Look.performed += i => camera_Input = i.ReadValue<Vector2>();
 
             //Movement Actions
             playerControls.PlayerMovement.Dodge.performed += i => dodge_Input = true;
@@ -80,10 +95,22 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Sprint.performed += i => sprint_Input = true;
             playerControls.PlayerMovement.Sprint.canceled += i => sprint_Input = false;
 
-            //Attack Actions
+            //R1 Actions
+            playerControls.PlayerActions.LightAttack.performed += i => lightAttck_Input = true;
+
+            //R2 Actions
             playerControls.PlayerActions.HeavyAttack.performed += i => heavyAttack_Input = true;
             playerControls.PlayerActions.ChargedHeavyAttack.performed += i => charge_HA_Input = true;
             playerControls.PlayerActions.ChargedHeavyAttack.canceled += i => charge_HA_Input = false;
+
+            //Lock on Inputs
+            playerControls.PlayerActions.LockOn.performed += i => lockOn_Input = true;
+            playerControls.PlayerActions.SeekLockOnTargetLeft.performed += i => lockOn_Left_Input = true;
+            playerControls.PlayerActions.SeekLockOnTargetRight.performed += i => lockOn_Right_Input = true;
+
+            //Change Equipment/Items
+            playerControls.PlayerActions.Next.performed += i => switch_Right_Weapon_Input = true;
+            playerControls.PlayerActions.Previous.performed += i => switch_Left_Weapon_Input = true;
 
             //Qued Inputs
             playerControls.PlayerActions.QuedLightAttack.performed += i => QuedInput(ref qued_LA_input);
@@ -112,26 +139,46 @@ public class InputManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += OnSceneChange;
-        instance.enabled = false;
+        //instance.enabled = false;
 
         if (playerControls != null)
         {
-            playerControls.Disable();
+            playerControls.Enable();
+            //playerControls.Disable();
         }
     }
     private void Update()
     {
+        HandleAllInputs();
+    }
+    private void HandleAllInputs()
+    {
         HandleMovementInput();
+        HandleCameraMovementInput();
+
         HandleLightAttackInput();
         HandleHeavyAttackInput();
-        //HandleDodgeInput();
-        //HandleSprintInput();
-        //HandleJumpInput();
+        HandleChargeHeavyInput();
+
+        HandleDodgeInput();
+        HandleSprintInput();
+        HandleJumpInput();
+
+        HandleLockOnInput();
+        HandleLockOnSwitchTargetInput();
+
+        HandleSwitchRightWeaponSlot();
+        HandleSwitchLeftWeaponSlot();
+
+        HandleQuedInputs();
     }
+    //Movement Inputs
     private void HandleMovementInput()
     {
         vertical_Input = movement_Input.y;
         horizontal_Input = movement_Input.x;
+
+        moveAmount = Mathf.Clamp01(Mathf.Abs(vertical_Input) + Mathf.Abs(horizontal_Input));
 
         if (moveAmount <= 0.5 && moveAmount > 0)
         {
@@ -164,7 +211,13 @@ public class InputManager : MonoBehaviour
         }
 
     }
+    private void HandleCameraMovementInput()
+    {
+        camVerticalInput = camera_Input.y;
+        camHorizontalInput = camera_Input.x;
+    }
 
+    //Attack Inputs
     private void HandleLightAttackInput()
     {
         if (lightAttck_Input)
@@ -172,7 +225,11 @@ public class InputManager : MonoBehaviour
             lightAttck_Input = false;
             //do nothing if UI window is open 
 
-            //do attack 
+            player.playerCombatManager.SetCharacterActionHand(true);
+
+            player.playerCombatManager.PerformWeaponBasedAction(
+                player.playerInventoryManager.currentRightHandWeapon.oh_r1_Action,
+                player.playerInventoryManager.currentRightHandWeapon);
 
         }
     }
@@ -183,10 +240,154 @@ public class InputManager : MonoBehaviour
             heavyAttack_Input = false;
             //do nothing if UI window is open 
 
-            //do attack 
+            player.playerCombatManager.SetCharacterActionHand(true);
+
+            //if we are using 2 hands, do the 2hand action instead of one hand action 
+            player.playerCombatManager.PerformWeaponBasedAction(
+                player.playerInventoryManager.currentRightHandWeapon.oh_r2_Action,
+                player.playerInventoryManager.currentRightHandWeapon);
+        }
+    }
+    private void HandleChargeHeavyInput()
+    {
+        if (player.isPerformingAction)
+        {
+            //only want to check this if we are performing an action already that requires charging 
+            if (player.playerCombatManager.isUsingRightHand.GetBool())
+            {
+                player.playerCombatManager.isChargingAttack = charge_HA_Input;
+            }
         }
     }
 
+    //Player Actions
+    private void HandleDodgeInput()
+    {
+        if (dodge_Input)
+        {
+            dodge_Input = false;
+            //disable when menu is open
+            //check for stamina
+            player.playerMovementManager.AttemptToDodge();
+        }
+    }
+    private void HandleSprintInput()
+    {
+        if (sprint_Input)
+        {
+            player.playerMovementManager.HandleSprinting();
+        }
+        else
+        {
+            player.playerMovementManager.isSprinting = false;
+        }
+    }
+    public void HandleJumpInput()
+    {
+        if (jump_Input)
+        {
+            jump_Input = false;
+
+            //dont do this if a menu is open
+
+            //check for grounded status or performing other actions
+
+            player.playerMovementManager.AttemptToJump();
+        }
+    }
+    private void HandleSwitchRightWeaponSlot()
+    {
+        if (switch_Right_Weapon_Input)
+        {
+            switch_Right_Weapon_Input = false;
+            player.playerEquipmentManager.SwitchRightWeapon();
+        }
+    }
+    private void HandleSwitchLeftWeaponSlot()
+    {
+        if (switch_Left_Weapon_Input)
+        {
+            switch_Left_Weapon_Input = false;
+            player.playerEquipmentManager.SwitchLeftWeapon();
+        }
+    }
+
+    //Lock On Inputs
+    private void HandleLockOnInput()
+    {
+        //check for dead target
+        if (player.playerCombatManager.isLockedOn)
+        {
+            if (player.playerCombatManager.currentTarget == null) return;
+
+            if (player.isDead)
+            {
+                player.playerCombatManager.isLockedOn = false;
+                if (lockOnCoroutine != null)
+                {
+                    Debug.Log("Dead target, select new one");
+                    StopCoroutine(lockOnCoroutine);
+                }
+                lockOnCoroutine = StartCoroutine(PlayerCamera.instance.WaitThenFindNewTarget());
+            }
+            //try to find new target to lock onto, makes sure the coroutine can not be running more than one at a time 
+        }
+
+        //if already locked on, unlock on from targets
+        if (lockOn_Input && player.playerCombatManager.isLockedOn)
+        {
+            lockOn_Input = false;
+            PlayerCamera.instance.ClearLockOnTargets();
+            player.playerCombatManager.isLockedOn = false;
+
+
+            return;
+        }
+        if (lockOn_Input && !player.playerCombatManager.isLockedOn)
+        {
+            lockOn_Input = false;
+
+            //how does lock on affect ranged weapons?
+
+            PlayerCamera.instance.HandleLocatingLockOnTargets();
+
+            if (PlayerCamera.instance.nearestLockOnTarget != null)
+            {
+                //set the target as our current lock on target 
+                player.playerCombatManager.SetTarget(PlayerCamera.instance.nearestLockOnTarget);
+                player.playerCombatManager.isLockedOn = true;
+            }
+        }
+    }
+    private void HandleLockOnSwitchTargetInput()
+    {
+        if (lockOn_Left_Input)
+        {
+            lockOn_Left_Input = false;
+            if (player.playerCombatManager.isLockedOn) //check if already locked on something
+            {
+                PlayerCamera.instance.HandleLocatingLockOnTargets();
+                if (PlayerCamera.instance.leftLockOnTarget != null)
+                {
+                    player.playerCombatManager.SetTarget(PlayerCamera.instance.leftLockOnTarget);
+                }
+            }
+        }
+        if (lockOn_Right_Input)
+        {
+            lockOn_Right_Input = false;
+            if (player.playerCombatManager.isLockedOn) //check if already locked on something
+            {
+                PlayerCamera.instance.HandleLocatingLockOnTargets();
+                if (PlayerCamera.instance.rightLockOnTarget != null)
+                {
+                    player.playerCombatManager.SetTarget(PlayerCamera.instance.rightLockOnTarget);
+                }
+            }
+        }
+    }
+
+    //Input Queing
     private void QuedInput(ref bool quedInput) //passing a ref means we pass a specific bool, and not the value of the bool(True or false)
     {
         //reset all qued inputs, only one at a time allowed

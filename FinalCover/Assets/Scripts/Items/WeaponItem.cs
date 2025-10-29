@@ -57,8 +57,8 @@ public class WeaponItem : Item
 
     //item based actions
     [Header("Item Based Actions")]
-    //public WeaponItemAction oh_r1_Action; //one handed r1 weapon action 
-    //public WeaponItemAction oh_r2_Action; // one handed r2 heavy attack action 
+    public WeaponItemAction oh_r1_Action; //one handed r1 weapon action 
+    public WeaponItemAction oh_r2_Action; // one handed r2 heavy attack action 
 
     //special abilities
 
