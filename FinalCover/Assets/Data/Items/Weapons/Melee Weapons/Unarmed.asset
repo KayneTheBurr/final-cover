@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6747da471adf1d4da3c6b77d10e6526, type: 3}
   m_Name: Unarmed
   m_EditorClassIdentifier: 
-  itemID: 
+  itemID: WPN_FST_001
   itemName: 
   itemIcon: {fileID: 0}
   itemDescription: 
-  weaponOverrideAnimator: {fileID: 0}
+  weaponOverrideAnimator: {fileID: 22100000, guid: 8be198b15cb52004bac0cf1852c46d5c, type: 2}
   weaponModel: {fileID: 3802664006396213514, guid: dbbabc96e85686b40bad249b011222a7, type: 3}
   strREQ: 0
   agiREQ: 0
@@ -48,6 +48,6 @@ MonoBehaviour:
   lightRunAttackStaminaCostModifier: 0.5
   lightRollAttackStaminaCostModifier: 0.5
   lightBackStepAttackStaminaCostModifier: 0
-  oh_r1_Action: {fileID: 0}
-  oh_r2_Action: {fileID: 0}
+  oh_r1_Action: {fileID: 11400000, guid: 41650bf608d56d44795d0fd19445cf2f, type: 2}
+  oh_r2_Action: {fileID: 11400000, guid: a5fc1698ef9c11043832e01e3b303ebd, type: 2}
   whooshes: []

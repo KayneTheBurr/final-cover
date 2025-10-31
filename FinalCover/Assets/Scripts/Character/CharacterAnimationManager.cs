@@ -109,6 +109,8 @@ public class CharacterAnimationManager : MonoBehaviour
         character.applyRootMotion = applyRootMotion;
         character.animator.CrossFade(targetAnimation, 0.2f);
 
+        Debug.Log("Told animator to play attack!");
+
     }
 
     public void UpdateAnimatorController(AnimatorOverrideController weaponController)

@@ -38,7 +38,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] bool switch_Right_Weapon_Input = false;
     [SerializeField] bool switch_Left_Weapon_Input = false;
 
-    [Header("Qued Inputs")]
+    [Header("Queued Inputs")]
     [SerializeField] float que_Input_Timer = 0;
     [SerializeField] float default_Que_Input_Timer = 0.5f;
     [SerializeField] bool input_Que_Active = false;

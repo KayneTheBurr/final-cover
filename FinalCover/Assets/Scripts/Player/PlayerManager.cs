@@ -38,7 +38,6 @@ public class PlayerManager : CharacterManager
 
         PlayerCamera.instance.SetPlayerAsFollowTarget();
 
-        AddAllVariableListeners();
     }
 
     protected override void Update()
@@ -48,33 +47,6 @@ public class PlayerManager : CharacterManager
         playerStatsManager.RegenerateStamina();
         playerStatsManager.RegenerateMana();
     }
-
-
-    public void AddAllVariableListeners()
-    {
-        //change all the listeners from being added using network variables to using interfaces to track when things change?
-
-        //when a player attribute is changed(heart, strength, agility, etc.)
-        //call the CalculateHealthBasedOnHeart(int heart) function any time the variable changes:
-
-        //    public int CalculateHealthBasedOnVitality(int vitality) //(example function)
-        //    {float health = 0;
-        //    health = vitality * 15;
-        //    return Mathf.RoundToInt(health);}
-
-        //on stamina/health/mana/hunger values changing, call a function
-        //like( SetNewStaminaValue, ResetStaminaRegenTimer(), etc. will also need to send this to the UI for bars to update
-
-
-        //when the weapon ID of the equiped weapons are changed looking at old/new IDs 
-
-        //passing in states to the animator when things change: isMoving, isChargingAttack, isLockeOn, etc
-
-
-
-
-    }
-
 
 }
     

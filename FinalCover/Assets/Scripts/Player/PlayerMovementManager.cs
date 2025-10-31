@@ -6,7 +6,7 @@ public class PlayerMovementManager : CharacterMovementManager
 {
     PlayerManager player;
 
-    [HideInInspector] public float verticalMovement, horizontalMovement, moveAmount;
+    [SerializeField] public float verticalMovement, horizontalMovement, moveAmount;
 
     [Header("Movement Settings")]
     private Vector3 moveDirection;
@@ -37,11 +37,11 @@ public class PlayerMovementManager : CharacterMovementManager
     }
     protected override void OnEnable()
     {
-
+        base.OnEnable();
     }
     protected override void OnDisable()
     {
-
+        base.OnDisable();
     }
     protected override void Update()
     {
@@ -51,6 +51,17 @@ public class PlayerMovementManager : CharacterMovementManager
             player.verticalMovement = verticalMovement;
             player.horizontalMovement = horizontalMovement;
             player.moveAmount = moveAmount;
+
+
+            if (player.playerCombatManager.isLockedOn || isSprinting)
+            {
+                player.playerAnimatorManager.UpdateAnimatorMovementParameters(horizontalMovement, verticalMovement, isSprinting);
+            }
+            else
+            {
+                //only pass vertical since strafing is only while locked on, want to only run forward with camera movement right now 
+                player.playerAnimatorManager.UpdateAnimatorMovementParameters(0, moveAmount, isSprinting);
+            }
         }
         
     }
@@ -112,7 +123,7 @@ public class PlayerMovementManager : CharacterMovementManager
     }
     private void HandleRotation()
     {
-        if (player.isDead || player.canRotate) return;
+        if (player.isDead) return;
         if (!player.canRotate) return; //if i cant rotate, dont let me rotate
 
         if (player.playerCombatManager.isLockedOn)//if locked on 
@@ -299,7 +310,7 @@ public class PlayerMovementManager : CharacterMovementManager
     public void ApplyJumpForce()
     {
         //apply an upward velocity, depends on in game forces
+        Debug.Log("Jump force Applied!");
         yVelocity.y = Mathf.Sqrt(jumpHeight * -2 * gravityForce);
     }
-
 }

@@ -44,6 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26375244a9d80564fa89509a1377d5bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapons: []
-  unarmedWeapon: {fileID: 0}
-  weaponEntries: []
+  weapons:
+  - {fileID: 11400000, guid: 324a29769790dea44b71e7eb18dac3c9, type: 2}
+  unarmedWeapon: {fileID: 11400000, guid: 324a29769790dea44b71e7eb18dac3c9, type: 2}
+  weaponEntries:
+  - weaponID: WPN_FST_001
+    weaponItem: {fileID: 11400000, guid: 324a29769790dea44b71e7eb18dac3c9, type: 2}

@@ -17,7 +17,7 @@ public class CharacterMovementManager : MonoBehaviour
 
     [Header("Movement Flags")]
     public bool isSprinting = false;
-    public ObservableVariable isMoving = new ObservableVariable(false);
+    public ObservableVariable isMoving = new ObservableVariable(true);
     public bool isJumping = false;
     public bool isDodging = false;
     public bool isFlying = false;
@@ -28,7 +28,7 @@ public class CharacterMovementManager : MonoBehaviour
     }
     protected virtual void OnEnable()
     {
-        character.animator.SetBool("IsMoving", isMoving.GetBool());
+        //character.animator.SetBool("IsMoving", isMoving.GetBool());
         isMoving.OnBoolChanged += character.OnIsMovingChanged;
     }
     protected virtual void OnDisable()

@@ -50,3 +50,4 @@ public class PlayerStatManager : CharacterStatManager
         currentStamina.SetFloat(maxStamina.GetInt());
     }
 }
+

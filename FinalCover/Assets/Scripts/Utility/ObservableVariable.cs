@@ -40,8 +40,14 @@ public class ObservableVariable
 
     public void SetFloat(float v)
     {
-        if (_type != VarType.Float) Debug.LogWarning("Set Float called on a non float Observable Variable!"); return;
+        if (_type != VarType.Float)
+        {
+            Debug.LogWarning("Set Float called on a non float Observable Variable!");
+            return;
+        }
+
         if (Mathf.Approximately(_f, v)) return;
+
         float old = _f; _f = v;
         OnFloatChanged?.Invoke(old, _f);
         OnValueChanged?.Invoke(VarType.Float, old, _f);
@@ -50,7 +56,11 @@ public class ObservableVariable
 
     public void SetInt(int v)
     {
-        if (_type != VarType.Int) Debug.LogWarning("Set Int called on a non int Observable Variable!"); return;
+        if (_type != VarType.Int)
+        {
+            Debug.LogWarning("Set Int called on a non int Observable Variable!");
+            return;
+        }
         if (_i == v) return;
         int old = _i; _i = v;
         OnIntChanged?.Invoke(old, _i);
@@ -60,7 +70,11 @@ public class ObservableVariable
 
     public void SetBool(bool v)
     {
-        if (_type != VarType.Bool) Debug.LogWarning("Set Bool called on a non bool Observable Variable!"); return;
+        if (_type != VarType.Bool)
+        {
+            Debug.LogWarning("Set Bool called on a non bool Observable Variable!");
+            return;
+        }
         if (_b == v) return;
         bool old = _b; _b = v;
         OnBoolChanged?.Invoke(old, _b);
@@ -70,7 +84,11 @@ public class ObservableVariable
 
     public void SetString(string v)
     {
-        if (_type != VarType.String) Debug.LogWarning("Set String called on a non string Observable Variable!"); return;
+        if (_type != VarType.String)
+        {
+            Debug.LogWarning("Set String called on a non string Observable Variable!");
+            return;
+        }
         if (string.Equals(_s, v, StringComparison.Ordinal)) return;
         string old = _s; _s = v ?? "";
         OnStringChanged?.Invoke(old, _s);

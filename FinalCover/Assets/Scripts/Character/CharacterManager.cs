@@ -64,8 +64,7 @@ public class CharacterManager : MonoBehaviour
     }
     protected virtual void Update()
     {
-        
-
+        animator.SetBool("isGrounded", isGrounded);
     }
     protected virtual void IgnoreMyOwnColliders()
     {
@@ -100,6 +99,7 @@ public class CharacterManager : MonoBehaviour
 
     public void OnIsMovingChanged(bool oldStatus, bool newStatus)
     {
+        Debug.Log("IsMoving changed!");
         animator.SetBool("IsMoving", characterMovementManager.isMoving.GetBool());
     }
 
@@ -125,6 +125,5 @@ public class CharacterManager : MonoBehaviour
         //disable the character
 
     }
-
 
 }

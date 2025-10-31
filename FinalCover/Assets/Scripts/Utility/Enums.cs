@@ -1,8 +1,12 @@
 using UnityEngine;
 
 public class Enums : MonoBehaviour
+{}
+
+public enum RotationMode
 {
-    
+    SoulsLike,  //souls like direction depends on camera direction
+    DiabloLike      //poe/diablo style with fixed camera
 }
 public enum CharacterGroup
 {
