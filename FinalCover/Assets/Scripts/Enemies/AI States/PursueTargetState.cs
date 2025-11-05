@@ -21,7 +21,7 @@ public class PursueTargetState : AIStates
 
         //if our target is outside of our FOV, pivot to face them 
         if (enemy.enemyCombatManager.viewableAngle < enemy.enemyCombatManager.minFOV ||
-            enemy.enemyCombatManager.viewableAngle > enemy.enemyCombatManager.minFOV)
+            enemy.enemyCombatManager.viewableAngle > enemy.enemyCombatManager.maxFOV)
         {
             enemy.enemyCombatManager.PivotTowardsTarget(enemy);
         }

@@ -35,7 +35,7 @@ public class CombatStanceState : AIStates
         //get the ai character to turn and face the target when its outisde its FOV
         if (!enemy.enemyMovementManager.isMoving.GetBool())
         {
-            if (enemy.enemyCombatManager.viewableAngle < -35 || enemy.enemyCombatManager.viewableAngle < 35)
+            if (enemy.enemyCombatManager.viewableAngle < -35 || enemy.enemyCombatManager.viewableAngle > 35)
             {
                 enemy.enemyCombatManager.PivotTowardsTarget(enemy);
             }
@@ -82,8 +82,8 @@ public class CombatStanceState : AIStates
             if (attack.maxAttackDistance < aiCharacter.enemyCombatManager.distanceFromTarget) continue;
 
             //check the attack angle, if outside FOV for the attack check the next attack
-            if (attack.minAttackAngle > aiCharacter.enemyCombatManager.distanceFromTarget) continue;
-            if (attack.maxAttackAngle < aiCharacter.enemyCombatManager.distanceFromTarget) continue;
+            if (attack.minAttackAngle > aiCharacter.enemyCombatManager.viewableAngle) continue;
+            if (attack.maxAttackAngle < aiCharacter.enemyCombatManager.viewableAngle) continue;
 
             potentialAttacks.Add(attack);
         }

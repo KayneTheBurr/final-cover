@@ -37,7 +37,6 @@ public class CharacterManager : MonoBehaviour
 
     protected virtual void Awake()
     {
-        DontDestroyOnLoad(this);
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         
@@ -126,7 +125,5 @@ public class CharacterManager : MonoBehaviour
         //disable the character
 
     }
-
-
 
 }

@@ -72,10 +72,7 @@ public class CharacterAnimationManager : MonoBehaviour
                             bool isPerformingAction, bool applyRootMotion = true,
                             bool canRotate = false, bool canMove = false)
     {
-        character.applyRootMotion = applyRootMotion;
-        character.animator.CrossFade(targetAnimation, 0.2f);
-
-
+        
         //stop character from performing other actions
         character.isPerformingAction = isPerformingAction;
         character.canMove = canMove;
@@ -100,18 +97,16 @@ public class CharacterAnimationManager : MonoBehaviour
 
         character.characterCombatManager.currentAttackType = attackType;
         character.characterCombatManager.lastAttackAnimation = targetAnimation;
-        character.applyRootMotion = applyRootMotion;
-        character.animator.CrossFade(targetAnimation, 0.3f);
+        
         character.isPerformingAction = isPerformingAction;
         character.canMove = canMove;
         character.canRotate = canRotate;
 
-        UpdateAnimatorController(weapon.weaponOverrideAnimator);
+        if (weapon?.weaponOverrideAnimator != null)
+            UpdateAnimatorController(weapon.weaponOverrideAnimator);
 
         character.applyRootMotion = applyRootMotion;
         character.animator.CrossFade(targetAnimation, 0.2f);
-
-        //Debug.Log($"Told animator to play {attackType}!");
 
     }
 

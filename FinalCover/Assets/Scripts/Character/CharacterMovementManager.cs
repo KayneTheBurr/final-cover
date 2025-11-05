@@ -19,7 +19,7 @@ public class CharacterMovementManager : MonoBehaviour
 
     [Header("Movement Flags")]
     public bool isSprinting = false;
-    public ObservableVariable isMoving = new ObservableVariable(true);
+    public ObservableVariable isMoving = new ObservableVariable(false);
     public bool isJumping = false;
     public bool isDodging = false;
     public bool isFlying = false;

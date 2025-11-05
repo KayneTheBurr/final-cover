@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 88c758ea89e17c5438fb1e0fd3f288cb
+AssetOrigin:
+  serializedVersion: 1
+  productId: 78795
+  packageName: 'Poly Art: Wolf'
+  packageVersion: 4.0a
+  assetPath: Assets/Art/Animations/Enemy/Wolf/Animations v2/Locomotion/Wolfr_Trot_Left_120.fbx
+  uploadId: 807600
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -19,8 +26,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -127,8 +132,7 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 25be4f04cada3554ea839c4ad099f89c,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: ebf50a980a75076449f6c88bc720cf48, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
@@ -140,10 +144,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 78795
-  packageName: 'Poly Art: Wolf'
-  packageVersion: 4.0a
-  assetPath: Assets/Art/Animations/Enemy/Wolf/Animations v2/Locomotion/Wolfr_Trot_Left_120.fbx
-  uploadId: 807600

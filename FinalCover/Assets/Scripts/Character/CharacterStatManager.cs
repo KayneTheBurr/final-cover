@@ -93,7 +93,7 @@ public class CharacterStatManager : MonoBehaviour
                 if (staminaTickTimer >= staminaTickRate)
                 {
                     staminaTickTimer = 0;
-                    currentStamina.SetFloat(currentStamina.GetFloat() + staminaRegenAmount);
+                    currentStamina.SetFloat(Mathf.Min(maxStamina.GetInt(), currentStamina.GetFloat() + staminaRegenAmount));
                 }
             }
         }
@@ -115,7 +115,7 @@ public class CharacterStatManager : MonoBehaviour
                 if (manaTickTimer >= manaTickRate)
                 {
                     manaTickTimer = 0;
-                    currentMana.SetFloat(currentMana.GetFloat() + manaRegenAmount);
+                    currentMana.SetFloat(Mathf.Min(maxMana.GetInt(), currentMana.GetFloat() + manaRegenAmount));
                 }
             }
         }
