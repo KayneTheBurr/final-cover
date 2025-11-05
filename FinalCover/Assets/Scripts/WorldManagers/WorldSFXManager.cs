@@ -29,6 +29,8 @@ public class WorldSFXManager : MonoBehaviour
 
     public AudioClip ChooseRandomSFXFromArray(AudioClip[] array)
     {
+        if (array.Length == 0) return null;
+
         //given an array of sfx, choose one randomly and return it 
         int index = Random.Range(0, array.Length);
         return array[index];

@@ -12,8 +12,10 @@ public class CharacterMovementManager : MonoBehaviour
     [SerializeField] protected Vector3 yVelocity; //measure the force characters are pulled downward
     [SerializeField] protected float groundedYVelocity = -20; //sticks us to the ground while grounded
     [SerializeField] protected float fallStartYVelocity = -5; //down force at the START of our fall, rises over time 
+    [SerializeField] protected float groundCheckYOffset = 0f; 
     protected bool fallingVelocitySet = false;
     protected float inAirTimer = 0;
+    
 
     [Header("Movement Flags")]
     public bool isSprinting = false;
@@ -71,6 +73,7 @@ public class CharacterMovementManager : MonoBehaviour
     
     public void EnableCanRotate()
     {
+        //Debug.Log("Enabled Can Rotate!");
         character.canRotate = true;
     }
 
@@ -81,12 +84,13 @@ public class CharacterMovementManager : MonoBehaviour
 
     protected virtual bool HandleGroundChecks()
     {
-        character.isGrounded = Physics.CheckSphere(character.transform.position, groundCheckSphereRadius, groundLayer);
+        character.isGrounded = Physics.CheckSphere(
+            character.transform.position + new Vector3(0, groundCheckYOffset, 0), groundCheckSphereRadius, groundLayer);
         return character.isGrounded;
     }
 
     protected void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireSphere(character.transform.position, groundCheckSphereRadius);
+        Gizmos.DrawWireSphere(character.transform.position + new Vector3(0, groundCheckYOffset, 0), groundCheckSphereRadius);
     }
 }

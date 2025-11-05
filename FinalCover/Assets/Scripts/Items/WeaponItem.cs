@@ -8,6 +8,9 @@ public class WeaponItem : Item
     [Header("Weapon Model")]
     public GameObject weaponModel;
 
+    [Header("Weapon Class")]
+    public WeaponClass weaponClass;
+
     [Header("Weapon Stat Requirements")]
     public int strREQ = 0;
     public int agiREQ = 0;

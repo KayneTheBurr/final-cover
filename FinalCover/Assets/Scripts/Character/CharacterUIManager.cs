@@ -6,7 +6,6 @@ public class CharacterUIManager : MonoBehaviour
     //public UI_Character_HP_Bar characterHPBar;
     public bool hasFloatingHPBar = true;
 
-
     public void OnHPChanged(float oldValue, float newValue)
     {
         //characterHPBar.oldHPValue = oldValue;

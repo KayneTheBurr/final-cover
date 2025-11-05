@@ -4,14 +4,21 @@ using UnityEngine;
 public class HeavyAttackWeaponItemAction : WeaponItemAction
 {
     [Header("Heavy Attacks")]
-    [SerializeField] string heavy_Attack_01 = "SS_Main_Heavy_Attack_01";
-    [SerializeField] string heavy_Attack_02 = "SS_Main_Heavy_Attack_02";
+    [SerializeField] string heavy_Attack_01 = "Main_Heavy_Attack_01";
+    [SerializeField] string heavy_Attack_02 = "Main_Heavy_Attack_02";
+    [SerializeField] string heavy_Attack_03 = "Main_Heavy_Attack_03";
+
+    [Header("Light Attacks")]
+    [SerializeField] string light_Attack_01 = "Main_Light_Attack_01";
+    [SerializeField] string light_Attack_02 = "Main_Light_Attack_02";
+    [SerializeField] string light_Attack_03 = "Main_Light_Attack_03";
+    [SerializeField] string light_Attack_04 = "Main_Light_Attack_04";
 
     //[Header("Heavy Run Attacks")]
-    //[SerializeField] string heavy_run_attack_01 = "SS_Main_Run_Attack_01";
+    //[SerializeField] string heavy_run_attack_01 = "Main_Run_Attack_01";
 
     //[Header("Heavy Rolling Attacks")]
-    //[SerializeField] string heavy_roll_attack_01 = "SS_Main_Roll_Attack_01";
+    //[SerializeField] string heavy_roll_attack_01 = "Main_Roll_Attack_01";
 
     public override void AttemptToPerformAction(PlayerManager playerPerformingAction, WeaponItem weaponPerformingAction)
     {
@@ -55,10 +62,13 @@ public class HeavyAttackWeaponItemAction : WeaponItemAction
             {
                 playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.HeavyAttack02, heavy_Attack_02, true);
             }
-
-            else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == heavy_Attack_02)
+            else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == light_Attack_03)
             {
-                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.HeavyAttack01, heavy_Attack_01, true);
+                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.HeavyAttack03, heavy_Attack_03, true);
+            }
+            else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == light_Attack_02)
+            {
+                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.HeavyAttack03, heavy_Attack_03, true);
             }
         }
         //otherwise perform a normal heavy attack

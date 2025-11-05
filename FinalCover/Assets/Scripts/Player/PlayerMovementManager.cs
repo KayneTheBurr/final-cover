@@ -247,7 +247,7 @@ public class PlayerMovementManager : CharacterMovementManager
             Quaternion playerRotation = Quaternion.LookRotation(dodgeDirection);
             player.transform.rotation = playerRotation;
 
-            player.playerAnimatorManager.PlayTargetActionAnimation("Fwd_Dodge_01", true, true);
+            player.playerAnimatorManager.PlayTargetActionAnimation("Fwd_Dodge_01", true, true, false, false);
 
             player.playerStatsManager.currentStamina.SetFloat(
                 player.playerStatsManager.currentStamina.GetFloat() - dodgeStaminaCost);
@@ -258,10 +258,12 @@ public class PlayerMovementManager : CharacterMovementManager
         {
             if (player.isGrounded) //roll allowed in air, backstep is not 
             {
-                player.playerAnimatorManager.PlayTargetActionAnimation("Back_Step_01", true, true);
+                player.playerAnimatorManager.PlayTargetActionAnimation("Fwd_Dodge_01", true, true, false, false);
 
                 player.playerStatsManager.currentStamina.SetFloat(
-                    player.playerStatsManager.currentStamina.GetFloat() - backStepStaminaCost);
+                    player.playerStatsManager.currentStamina.GetFloat() - dodgeStaminaCost);
+
+                isDodging = true;
             }
         }
     }

@@ -18,6 +18,7 @@ MonoBehaviour:
   itemDescription: 
   weaponOverrideAnimator: {fileID: 22100000, guid: 8be198b15cb52004bac0cf1852c46d5c, type: 2}
   weaponModel: {fileID: 3802664006396213514, guid: dbbabc96e85686b40bad249b011222a7, type: 3}
+  weaponClass: 1
   strREQ: 0
   agiREQ: 0
   arcREQ: 0

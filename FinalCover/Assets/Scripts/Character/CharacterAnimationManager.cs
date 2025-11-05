@@ -90,6 +90,8 @@ public class CharacterAnimationManager : MonoBehaviour
                             bool isPerformingAction, bool applyRootMotion = true,
                             bool canRotate = false, bool canMove = false)
     {
+        //Debug.Log(attackType); //called successfuly
+
         //keep track of the last attack performed
         //keep track of current attack type
         //update the animation set to current weapon animations
@@ -109,7 +111,7 @@ public class CharacterAnimationManager : MonoBehaviour
         character.applyRootMotion = applyRootMotion;
         character.animator.CrossFade(targetAnimation, 0.2f);
 
-        Debug.Log("Told animator to play attack!");
+        //Debug.Log($"Told animator to play {attackType}!");
 
     }
 

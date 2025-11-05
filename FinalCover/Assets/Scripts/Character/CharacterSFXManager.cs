@@ -16,6 +16,7 @@ public class CharacterSFXManager : MonoBehaviour
     public void PlayDodgeSFX()
     {
         //Debug.Log("dodge sfx");
+        if (WorldSFXManager.instance.rollSFX == null) return;
         audioSource.PlayOneShot(WorldSFXManager.instance.rollSFX);
     }
     public void PlaySoundFX(AudioClip soundFX, float volume = 1, bool randomizePitch = true, float pitchRandomAmount = 0.1f)

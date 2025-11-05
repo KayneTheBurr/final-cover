@@ -48,8 +48,8 @@ public class CharacterManager : MonoBehaviour
         characterSFXManager = GetComponent<CharacterSFXManager>();
         characterUIManager = GetComponent<CharacterUIManager>();
         characterEffectsManager = GetComponent<CharacterEffectsManager>();
-
     }
+
     protected virtual void Start()
     {
         IgnoreMyOwnColliders();
@@ -65,6 +65,10 @@ public class CharacterManager : MonoBehaviour
     protected virtual void Update()
     {
         animator.SetBool("isGrounded", isGrounded);
+    }
+    protected virtual void FixedUpdate()
+    {
+
     }
     protected virtual void IgnoreMyOwnColliders()
     {
@@ -91,18 +95,15 @@ public class CharacterManager : MonoBehaviour
 
     }
 
-    
     public void OnIsChargingAttackChanged(bool old, bool isChargingAttack)
     {
         animator.SetBool("IsChargingAttack", isChargingAttack);
     }
-
     public void OnIsMovingChanged(bool oldStatus, bool newStatus)
     {
-        Debug.Log("IsMoving changed!");
+        //Debug.Log("IsMoving changed!");
         animator.SetBool("IsMoving", characterMovementManager.isMoving.GetBool());
     }
-
     public virtual IEnumerator HandleDeathEvents(bool manuallySelectDeathAnim = false)
     {
 
@@ -125,5 +126,7 @@ public class CharacterManager : MonoBehaviour
         //disable the character
 
     }
+
+
 
 }

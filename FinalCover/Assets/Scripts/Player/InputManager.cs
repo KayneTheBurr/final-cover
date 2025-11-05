@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class InputManager : MonoBehaviour
@@ -6,6 +7,14 @@ public class InputManager : MonoBehaviour
     public static InputManager instance;
     PlayerControls playerControls;
     public PlayerManager player;
+
+    [Header("Allowed Inputs")]
+    [SerializeField] bool allowJump;
+    [SerializeField] bool allowSprint;
+    [SerializeField] bool allowLockOn;
+    [SerializeField] bool allowDodge;
+    [SerializeField] bool allowWeaponSwap;
+    [SerializeField] bool allowChargedHeavyAttacks;
 
     [Header("Player Movement")]
     public Vector2 movement_Input;
@@ -17,6 +26,14 @@ public class InputManager : MonoBehaviour
     [SerializeField] Vector2 camera_Input;
     public float camVerticalInput;
     public float camHorizontalInput;
+
+    [Header("Aim Inputs")]
+    [SerializeField] float mousePixelThreshold = 3f;
+    [SerializeField] float stickDeadzone = 0.1f;
+    public bool usingMouse;
+    public bool usingController;
+    public Vector2 mouse_Pos;
+    private Vector2 lastMousePos;
 
     [Header("Attack (R1/R2) Inputs")]
     [SerializeField] bool lightAttck_Input = false;
@@ -40,7 +57,7 @@ public class InputManager : MonoBehaviour
 
     [Header("Queued Inputs")]
     [SerializeField] float que_Input_Timer = 0;
-    [SerializeField] float default_Que_Input_Timer = 0.5f;
+    [SerializeField] float default_Que_Input_Timer = 0.25f;
     [SerializeField] bool input_Que_Active = false;
     [SerializeField] bool qued_LA_input = false;
     [SerializeField] bool qued_HA_input = false;
@@ -87,6 +104,9 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Move.performed += i => movement_Input = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Look.performed += i => camera_Input = i.ReadValue<Vector2>();
 
+            //Aim Inputs
+            playerControls.PlayerMovement.MouseAim.performed += i => mouse_Pos = i.ReadValue<Vector2>();
+
             //Movement Actions
             playerControls.PlayerMovement.Dodge.performed += i => dodge_Input = true;
             playerControls.PlayerMovement.Jump.performed += i => jump_Input = true;
@@ -115,6 +135,8 @@ public class InputManager : MonoBehaviour
             //Qued Inputs
             playerControls.PlayerActions.QuedLightAttack.performed += i => QuedInput(ref qued_LA_input);
             playerControls.PlayerActions.QuedHeavyAttack.performed += i => QuedInput(ref qued_HA_input);
+
+            InputSystem.onActionChange += InputActionChangeCallback;
         }
     }
     private void OnApplicationFocus(bool focus)
@@ -134,6 +156,7 @@ public class InputManager : MonoBehaviour
     private void OnDestroy()
     {
         SceneManager.activeSceneChanged -= OnSceneChange;
+        InputSystem.onActionChange -= InputActionChangeCallback;
     }
     private void Start()
     {
@@ -150,6 +173,56 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         HandleAllInputs();
+    }
+    private void InputActionChangeCallback(object obj, InputActionChange change)
+    {
+        if (change != InputActionChange.ActionPerformed) return;
+        if (obj is not InputAction actionCalled) return;
+        if (actionCalled.activeControl == null) return;
+
+
+        if (change == InputActionChange.ActionPerformed)
+        {
+            if (obj != null && obj is InputAction action)
+            { // Modern C# is usable because we're checking the type, not for null
+                if (action.activeControl == null) return; // Can't use modern C# here because Destroy exists and does weird things with the memory behind the scenes
+                InputDevice lastDevice = action.activeControl.device;
+
+                //print(lastDevice.name);
+
+                if (lastDevice is Keyboard)
+                {
+                    usingMouse = true;
+                    usingController = false;
+                }
+                else if(lastDevice is Mouse)
+                {
+                    if (action.activeValueType != typeof(Vector2)) return;
+
+                    Vector2 pos = action.ReadValue<Vector2>();
+                    Vector2 delta = pos - lastMousePos;
+                    lastMousePos = pos;
+
+                    if (delta.sqrMagnitude >= mousePixelThreshold * mousePixelThreshold)
+                    {
+                        usingMouse = true;
+                        usingController = false;
+                    }
+                }
+                else
+                {
+                    if (action.activeValueType != typeof(Vector2)) return;
+
+                    Vector2 v = action.ReadValue<Vector2>();
+                    if (v.magnitude >= stickDeadzone)
+                    {
+                        usingMouse = false;
+                        usingController = true;
+                    }
+                        
+                }
+            }
+        }
     }
     private void HandleAllInputs()
     {
@@ -227,6 +300,8 @@ public class InputManager : MonoBehaviour
 
             player.playerCombatManager.SetCharacterActionHand(true);
 
+            //Debug.Log("Light Attack Input");
+
             player.playerCombatManager.PerformWeaponBasedAction(
                 player.playerInventoryManager.currentRightHandWeapon.oh_r1_Action,
                 player.playerInventoryManager.currentRightHandWeapon);
@@ -250,12 +325,14 @@ public class InputManager : MonoBehaviour
     }
     private void HandleChargeHeavyInput()
     {
+        if (!allowChargedHeavyAttacks) return;
+
         if (player.isPerformingAction)
         {
             //only want to check this if we are performing an action already that requires charging 
             if (player.playerCombatManager.isUsingRightHand.GetBool())
             {
-                player.playerCombatManager.isChargingAttack = charge_HA_Input;
+                player.playerCombatManager.isChargingAttack.SetBool(charge_HA_Input);
             }
         }
     }
@@ -263,6 +340,7 @@ public class InputManager : MonoBehaviour
     //Player Actions
     private void HandleDodgeInput()
     {
+        if (!allowDodge) return;
         if (dodge_Input)
         {
             dodge_Input = false;
@@ -273,6 +351,7 @@ public class InputManager : MonoBehaviour
     }
     private void HandleSprintInput()
     {
+        if (!allowSprint) return;
         if (sprint_Input)
         {
             player.playerMovementManager.HandleSprinting();
@@ -284,6 +363,8 @@ public class InputManager : MonoBehaviour
     }
     public void HandleJumpInput()
     {
+        if (!allowJump) return;
+
         if (jump_Input)
         {
             jump_Input = false;
@@ -297,6 +378,7 @@ public class InputManager : MonoBehaviour
     }
     private void HandleSwitchRightWeaponSlot()
     {
+        if (!allowWeaponSwap) return;
         if (switch_Right_Weapon_Input)
         {
             switch_Right_Weapon_Input = false;
@@ -305,6 +387,7 @@ public class InputManager : MonoBehaviour
     }
     private void HandleSwitchLeftWeaponSlot()
     {
+        if (!allowWeaponSwap) return;
         if (switch_Left_Weapon_Input)
         {
             switch_Left_Weapon_Input = false;
@@ -315,6 +398,7 @@ public class InputManager : MonoBehaviour
     //Lock On Inputs
     private void HandleLockOnInput()
     {
+        if (!allowLockOn) return;
         //check for dead target
         if (player.playerCombatManager.isLockedOn)
         {

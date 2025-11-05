@@ -20,8 +20,9 @@ public class CharacterCombatManager : MonoBehaviour
     public bool canPerformRollingAttack = false;
     public bool canPerformBackStepAttack = false;
     public bool isInvulnerable = false;
-    public bool isChargingAttack = false;
+    public ObservableVariable isChargingAttack = new (false);
     public bool isLockedOn = false;
+    public float chargeTimer = 0;
 
     protected virtual void Awake()
     {
@@ -32,7 +33,15 @@ public class CharacterCombatManager : MonoBehaviour
             lockOnTransform = GetComponentInChildren<LockOnTarget>().GetComponent<Transform>();
         }
     }
+    protected virtual void OnEnable()
+    {
+        isChargingAttack.OnBoolChanged += OnIsChargingAttackChanged;
+    }
+    protected virtual void OnDisable()
+    {
+        isChargingAttack.OnBoolChanged -= OnIsChargingAttackChanged;
 
+    }
     public virtual void SetTarget(CharacterManager newTarget)
     {
         if (newTarget != null)
@@ -43,6 +52,10 @@ public class CharacterCombatManager : MonoBehaviour
         {
             currentTarget = null;
         }
+    }
+    public void OnIsChargingAttackChanged(bool old, bool isChargingAttack)
+    {
+        character.animator.SetBool("IsChargingAttack", isChargingAttack);
     }
     public virtual void EnableCanDoCombo()
     {

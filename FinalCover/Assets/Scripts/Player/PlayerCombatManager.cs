@@ -19,6 +19,14 @@ public class PlayerCombatManager : CharacterCombatManager
         base.Awake();
         player = GetComponent<PlayerManager>();
     }
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+    }
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+    }
 
     public void PerformWeaponBasedAction(WeaponItemAction weaponAction, WeaponItem weaponPerformingAction)
     {
@@ -32,12 +40,58 @@ public class PlayerCombatManager : CharacterCombatManager
     public override void EnableCanDoCombo()
     {
         base.EnableCanDoCombo();
+        //Debug.Log("can combo");
         canComboWithMainHandWeapon = true;
     }
     public override void DisableCanDoCombo()
     {
         base.DisableCanDoCombo();
         canComboWithMainHandWeapon = false;
+    }
+    public void DrainStaminaBasedOnAttack()
+    {
+        if (!player) return;
+        if (currentWeaponBeingUsed == null) return;
+
+        float staminaDrained = 0f;
+
+        switch (currentAttackType)
+        {
+            case AttackType.LightAttack01:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightAttackStaminaCostModifier;
+                break;
+            case AttackType.LightAttack02:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightAttackStaminaCostModifier;
+                break;
+            case AttackType.HeavyAttack01:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
+                break;
+            case AttackType.HeavyAttack02:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
+                break;
+            case AttackType.ChargeAttack01:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
+                break;
+            case AttackType.ChargeAttack02:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
+                break;
+            case AttackType.LightRunningAttack01:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightRunAttackStaminaCostModifier;
+                break;
+            case AttackType.LightRollingAttack01:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightRollAttackStaminaCostModifier;
+                break;
+            case AttackType.LightBackStepAttack01:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightBackStepAttackStaminaCostModifier;
+                break;
+            default:
+                break;
+        }
+
+        //Debug.Log("Stamina Drained" + staminaDrained);
+
+        player.playerStatsManager.currentStamina.SetFloat(
+            player.playerStatsManager.currentStamina.GetFloat() - staminaDrained);
     }
 
     public override void SetTarget(CharacterManager newTarget)

@@ -4,16 +4,18 @@ using UnityEngine;
 public class LightAttackWeaponItemAction : WeaponItemAction
 {
     [Header("Heavy Attacks")]
-    [SerializeField] string heavy_Attack_01 = "SS_Main_Heavy_Attack_01";
-    [SerializeField] string heavy_Attack_02 = "SS_Main_Heavy_Attack_02";
-
+    [SerializeField] string heavy_Attack_01 = "Main_Heavy_Attack_01";
+    [SerializeField] string heavy_Attack_02 = "Main_Heavy_Attack_02";
+    [SerializeField] string heavy_Attack_03 = "Main_Heavy_Attack_03";
 
     [Header("Light Attacks")]
     [SerializeField] string light_Attack_01 = "Main_Light_Attack_01";
     [SerializeField] string light_Attack_02 = "Main_Light_Attack_02";
+    [SerializeField] string light_Attack_03 = "Main_Light_Attack_03";
+    [SerializeField] string light_Attack_04 = "Main_Light_Attack_04";
 
     [Header("Light Run Attacks")]
-    [SerializeField] string light_run_attack_01 = "SS_Main_Run_Attack_01";
+    [SerializeField] string light_run_attack_01 = "Main_Run_Attack_01";
 
     [Header("Light Dodge Attacks")]
     [SerializeField] string light_roll_attack_01 = "SS_Main_Roll_Attack_01";
@@ -22,6 +24,8 @@ public class LightAttackWeaponItemAction : WeaponItemAction
     public override void AttemptToPerformAction(PlayerManager playerPerformingAction, WeaponItem weaponPerformingAction)
     {
         base.AttemptToPerformAction(playerPerformingAction, weaponPerformingAction);
+
+        //Debug.Log("Perform Light Attack");
 
         //check for anything that stops the action
         if (!playerPerformingAction) return;
@@ -35,19 +39,24 @@ public class LightAttackWeaponItemAction : WeaponItemAction
         //if we are sprinting, perform a running attack 
         if (playerPerformingAction.characterMovementManager.isSprinting)
         {
-            PerformLightRunningAttack(playerPerformingAction, weaponPerformingAction);
+            if(weaponPerformingAction.weaponClass != WeaponClass.Bow)
+            {
+                //For weapons that DO have a sprint attack use them here, else just return
+                PerformLightRunningAttack(playerPerformingAction, weaponPerformingAction);
+            }
+            
             return;
         }
         //if we are rolling, perform a rolling attack
         if (playerPerformingAction.characterCombatManager.canPerformRollingAttack)
         {
-            PerformLightRollingAttack(playerPerformingAction, weaponPerformingAction);
+            //PerformLightRollingAttack(playerPerformingAction, weaponPerformingAction);
             return;
         }
         //if we are backsteping, perform a backstep attack
         if (playerPerformingAction.characterCombatManager.canPerformBackStepAttack)
         {
-            PerformLightBackStepAttack(playerPerformingAction, weaponPerformingAction);
+            //PerformLightBackStepAttack(playerPerformingAction, weaponPerformingAction);
             return;
         }
 
@@ -56,6 +65,7 @@ public class LightAttackWeaponItemAction : WeaponItemAction
 
     private void PerformLightAttack(PlayerManager playerPerformingAction, WeaponItem weaponPerformingAction)
     {
+        
         //if we are attacking and we can perform a combo, perform the combo attack
         if (playerPerformingAction.playerCombatManager.canComboWithMainHandWeapon && playerPerformingAction.isPerformingAction)
         {
@@ -72,13 +82,13 @@ public class LightAttackWeaponItemAction : WeaponItemAction
             {
                 playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.LightAttack01, light_Attack_01, true);
             }
-            else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == heavy_Attack_01)
-            {
-                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.LightAttack02, light_Attack_02, true);
-            }
             else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == heavy_Attack_02)
             {
-                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.LightAttack01, light_Attack_01, true);
+                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.LightAttack03, light_Attack_03, true);
+            }
+            else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == light_Attack_03)
+            {
+                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.LightAttack04, light_Attack_04, true);
             }
         }
         //otherwise perform a normal light attack
