@@ -36,20 +36,22 @@ public class EnemyCombatManager : CharacterCombatManager
         {
             CharacterManager targetCharacter = colliders[i].transform.GetComponent<CharacterManager>();
 
-            if (targetCharacter == null) continue;
-            if (targetCharacter == aiCharacter) continue;
-            if (targetCharacter.isDead) continue;
+            if (targetCharacter == null) continue; //if not a character pass
+            if (targetCharacter == aiCharacter) continue; //if its me pass
+            if (targetCharacter.isDead) continue; //skip dead characters
 
+            //check if we are on teh same "team"
             if (WorldUtilityManager.instance.CanIDamageThisTarget(aiCharacter.characterGroup, targetCharacter.characterGroup))
             {
                 //if a potential target is found, is it in front of us?
                 Vector3 targetsDirection = targetCharacter.transform.position - aiCharacter.transform.position;
                 float angleOfPotentialTarget = Vector3.Angle(targetsDirection, aiCharacter.transform.forward);
 
-                if (angleOfPotentialTarget > minFOV && angleOfPotentialTarget < maxFOV)
+                if (angleOfPotentialTarget > minFOV && angleOfPotentialTarget < maxFOV) //if in FOV
                 {
                     Debug.DrawLine(aiCharacter.characterCombatManager.lockOnTransform.position,
                         targetCharacter.characterCombatManager.lockOnTransform.position, Color.green);
+
                     //last, check for linecast if the target is obscured
                     if (Physics.Linecast(aiCharacter.characterCombatManager.lockOnTransform.position,
                             targetCharacter.characterCombatManager.lockOnTransform.position,
@@ -66,6 +68,8 @@ public class EnemyCombatManager : CharacterCombatManager
                         //assign the target
                         aiCharacter.characterCombatManager.SetTarget(targetCharacter);
 
+                        aiCharacter.animator.SetBool("InCombat", true);
+
                         //Once target is found, turn/pivot towards the target rather than slowly walking at an angle towards them 
                         PivotTowardsTarget(aiCharacter);
                     }
@@ -74,7 +78,7 @@ public class EnemyCombatManager : CharacterCombatManager
         }
     }
 
-    public void PivotTowardsTarget(EnemyCharacterManager aICharacter)
+    public virtual void PivotTowardsTarget(EnemyCharacterManager aICharacter)
     {
         //play a pivot animation depending on viewabe angle of target character
         if (aICharacter.isPerformingAction) return;
@@ -126,7 +130,7 @@ public class EnemyCombatManager : CharacterCombatManager
         if (currentTarget == null) return;
 
         //check if we can rotate 
-        if (aiCharacter.canRotate) return;
+        if (!aiCharacter.canRotate) return;
 
         if (aiCharacter.isPerformingAction) return;
 
@@ -139,7 +143,8 @@ public class EnemyCombatManager : CharacterCombatManager
             targetDirection = aiCharacter.transform.forward;
 
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        aiCharacter.transform.rotation = Quaternion.Slerp(aiCharacter.transform.rotation, targetRotation, attackTrackingSpeed);
+        //aiCharacter.transform.rotation = Quaternion.Slerp(aiCharacter.transform.rotation, targetRotation, attackTrackingSpeed);
+        aiCharacter.transform.rotation = Quaternion.RotateTowards(aiCharacter.transform.rotation, targetRotation, attackTrackingSpeed * Time.deltaTime);
     }
 
     public void HandleActionRecovery(EnemyCharacterManager aICharacter)

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 [CreateAssetMenu(menuName = "AI / States / Combat Stance")]
 public class CombatStanceState : AIStates
 {
-    //1. Select an attack for the attack state based on: DIstance, Angle, Chance/weight, probability etc
+    //1. Select an attack for the attack state based on: Distance, Angle, Chance/weight, probability etc
     //2. process combat logic while waiting to attack(dodge/block/strafe etc)
     //3. if target moves out of range, return to pursue state to chase
     //4. if target is too far away/no longer there, switch to idle state

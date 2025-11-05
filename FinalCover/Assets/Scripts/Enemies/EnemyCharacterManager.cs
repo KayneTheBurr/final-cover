@@ -38,6 +38,8 @@ public class EnemyCharacterManager : CharacterManager
 
         idle = Instantiate(idle);
         pursueTarget = Instantiate(pursueTarget);
+        combatStance = Instantiate(combatStance);
+        attack = Instantiate(attack);
 
         currentState = idle;
     }
@@ -48,9 +50,6 @@ public class EnemyCharacterManager : CharacterManager
     protected override void OnEnable()
     {
         base.OnEnable();
-
-
-
     }
     protected override void OnDisable()
     {
