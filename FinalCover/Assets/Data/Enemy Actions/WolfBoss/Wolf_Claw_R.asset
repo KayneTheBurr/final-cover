@@ -13,11 +13,15 @@ MonoBehaviour:
   m_Name: Wolf_Claw_R
   m_EditorClassIdentifier: 
   attackAnimation: Wolf_Attack_Claw_R
-  comboAction: {fileID: 0}
-  attackWeight: 50
+  enemyAttackType: 0
   attackType: 0
-  actionRecoveryTime: 1.5
+  comboAction: {fileID: 11400000, guid: a31a064d3f2449944b24949635615a14, type: 2}
+  attackTrackingSpeed: 30
+  attackWeight: 50
+  cooldownTime: 0.5
+  requiresLOS: 1
+  actionRecoveryTime: 1
   minAttackAngle: -35
   maxAttackAngle: 35
   minAttackDistance: 0
-  maxAttackDistance: 3
+  maxAttackDistance: 5

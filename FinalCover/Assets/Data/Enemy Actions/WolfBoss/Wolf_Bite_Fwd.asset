@@ -13,11 +13,15 @@ MonoBehaviour:
   m_Name: Wolf_Bite_Fwd
   m_EditorClassIdentifier: 
   attackAnimation: Wolf_Attack_Bite_Fwd
-  comboAction: {fileID: 0}
-  attackWeight: 50
+  enemyAttackType: 1
   attackType: 0
-  actionRecoveryTime: 1.5
-  minAttackAngle: -35
-  maxAttackAngle: 35
-  minAttackDistance: 0
-  maxAttackDistance: 3
+  comboAction: {fileID: 11400000, guid: 1a5a453d052d0824cbe5ef6239b5a279, type: 2}
+  attackTrackingSpeed: 50
+  attackWeight: 50
+  cooldownTime: 1
+  requiresLOS: 1
+  actionRecoveryTime: 1
+  minAttackAngle: -25
+  maxAttackAngle: 25
+  minAttackDistance: 5
+  maxAttackDistance: 8

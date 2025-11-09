@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Enums : MonoBehaviour
 {}
-
+public enum EnemyAttackType { Melee, Ranged}
 public enum RotationMode
 {
     SoulsLike,  //souls like direction depends on camera direction

@@ -29,6 +29,8 @@ public class WolfDamageCollider : DamageCollider
         damageEffect.contactPoint = contactPoint;
         damageEffect.angleHitFrom = Vector3.SignedAngle(wolfCharacter.transform.forward, damageTarget.transform.forward, Vector3.up);
 
+        Debug.Log("Deal Damage!");
+
         damageTarget.characterEffectsManager.ProcessInstantEffects(damageEffect);
     }
 }

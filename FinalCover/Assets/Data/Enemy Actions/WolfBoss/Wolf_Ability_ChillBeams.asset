@@ -13,11 +13,15 @@ MonoBehaviour:
   m_Name: Wolf_Ability_ChillBeams
   m_EditorClassIdentifier: 
   attackAnimation: Wolf_Chill_Beams
-  comboAction: {fileID: 0}
-  attackWeight: 50
+  enemyAttackType: 1
   attackType: 0
-  actionRecoveryTime: 1.5
+  comboAction: {fileID: 0}
+  attackTrackingSpeed: 20
+  attackWeight: 50
+  cooldownTime: 15
+  requiresLOS: 0
+  actionRecoveryTime: 1
   minAttackAngle: -35
   maxAttackAngle: 35
   minAttackDistance: 0
-  maxAttackDistance: 3
+  maxAttackDistance: 15

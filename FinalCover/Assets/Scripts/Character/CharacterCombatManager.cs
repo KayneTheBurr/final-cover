@@ -33,6 +33,14 @@ public class CharacterCombatManager : MonoBehaviour
             lockOnTransform = GetComponentInChildren<LockOnTarget>().GetComponent<Transform>();
         }
     }
+    protected virtual void Start()
+    {
+
+    }
+    protected virtual void Update()
+    {
+
+    }
     protected virtual void OnEnable()
     {
         isChargingAttack.OnBoolChanged += OnIsChargingAttackChanged;

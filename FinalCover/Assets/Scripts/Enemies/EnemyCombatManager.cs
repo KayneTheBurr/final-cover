@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class EnemyCombatManager : CharacterCombatManager
 {
@@ -17,8 +19,10 @@ public class EnemyCombatManager : CharacterCombatManager
     public float minFOV = -35;
     public float maxFOV = 35;
 
-    [Header("Attack Rotation Speed")]
-    public float attackTrackingSpeed = 20;
+    [Header("Attacks")]
+    public List<EnemyAttackAction> availableAttacks = new();
+
+    public Dictionary<EnemyAttackAction, float> cooldownTracker = new();
 
 
     protected override void Awake()
@@ -26,12 +30,20 @@ public class EnemyCombatManager : CharacterCombatManager
         base.Awake();
         enemy = GetComponent<EnemyCharacterManager>();
     }
+    protected override void Start()
+    {
+        foreach(var attack in enemy.combatStance.enemyCharacterAttacks)
+        {
+            availableAttacks.Add(attack);
+            cooldownTracker.Add(attack, attack.cooldownTime);
+        }
+    }
     public void FindATargetViaLineOfSight(EnemyCharacterManager aiCharacter)
     {
         if (currentTarget != null) return;
 
         Collider[] colliders = Physics.OverlapSphere(aiCharacter.transform.position, detectionRadius, WorldUtilityManager.instance.GetCharacterLayers());
-
+        
         for (int i = 0; i < colliders.Length; i++)
         {
             CharacterManager targetCharacter = colliders[i].transform.GetComponent<CharacterManager>();
@@ -49,6 +61,7 @@ public class EnemyCombatManager : CharacterCombatManager
 
                 if (angleOfPotentialTarget > minFOV && angleOfPotentialTarget < maxFOV) //if in FOV
                 {
+                    
                     Debug.DrawLine(aiCharacter.characterCombatManager.lockOnTransform.position,
                         targetCharacter.characterCombatManager.lockOnTransform.position, Color.green);
 
@@ -68,7 +81,7 @@ public class EnemyCombatManager : CharacterCombatManager
                         //assign the target
                         aiCharacter.characterCombatManager.SetTarget(targetCharacter);
 
-                        aiCharacter.animator.SetBool("InCombat", true);
+                        aiCharacter.animator.SetBool("InCombatStance", true);
 
                         //Once target is found, turn/pivot towards the target rather than slowly walking at an angle towards them 
                         PivotTowardsTarget(aiCharacter);
@@ -125,14 +138,12 @@ public class EnemyCombatManager : CharacterCombatManager
         }
     }
 
-    public void RotateTowardsTargetWhileAttacking(EnemyCharacterManager aiCharacter)
+    public void RotateTowardsTargetWhileAttacking(EnemyCharacterManager aiCharacter, EnemyAttackAction currentAttack)
     {
         if (currentTarget == null) return;
 
         //check if we can rotate 
         if (!aiCharacter.canRotate) return;
-
-        if (aiCharacter.isPerformingAction) return;
 
         //rotate towards the target at a specified rotation speed during specific frames
         Vector3 targetDirection = currentTarget.transform.position - transform.position;
@@ -144,7 +155,8 @@ public class EnemyCombatManager : CharacterCombatManager
 
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
         //aiCharacter.transform.rotation = Quaternion.Slerp(aiCharacter.transform.rotation, targetRotation, attackTrackingSpeed);
-        aiCharacter.transform.rotation = Quaternion.RotateTowards(aiCharacter.transform.rotation, targetRotation, attackTrackingSpeed * Time.deltaTime);
+        aiCharacter.transform.rotation = Quaternion.RotateTowards(
+            aiCharacter.transform.rotation, targetRotation, currentAttack.attackTrackingSpeed * Time.deltaTime);
     }
 
     public void HandleActionRecovery(EnemyCharacterManager aICharacter)
@@ -156,5 +168,67 @@ public class EnemyCombatManager : CharacterCombatManager
                 actionRecoveryTimer -= Time.deltaTime;
             }
         }
+    }
+
+    public bool HasRangedAttack()
+    {
+        for (int i = 0; i < availableAttacks.Count; i++)
+        {
+            if (availableAttacks[i] != null && availableAttacks[i].enemyAttackType == EnemyAttackType.Ranged)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool HasRangedAttackAvailable(Vector3 origin, Vector3 targetPos)
+    {
+        for (int i = 0; i < availableAttacks.Count; i++)
+        {
+            var atk = availableAttacks[i];
+            if (atk == null) continue;
+            if (atk.enemyAttackType != EnemyAttackType.Ranged) continue;
+            if (!enemy.enemyCombatManager.AttackOffCooldown(atk)) continue;
+
+            float dist = Vector3.Distance(origin, targetPos);
+            if (dist < atk.minAttackDistance || dist > atk.maxAttackDistance) continue;
+
+            // check LOS if needed
+            if (atk.requiresLOS)
+            {
+                if (Physics.Linecast(origin, targetPos, WorldUtilityManager.instance.GetEnviroLayers()))
+                    continue;
+            }
+            //if makes it down to here before exiting loop, has a tranged attack available
+            return true;
+        }
+        //no ranged attacks available
+        return false;
+    }
+
+    public void StartCooldown(EnemyAttackAction action)
+    {
+        if (!action) return;
+        cooldownTracker[action] = action.cooldownTime;
+    }
+    public void HandleCooldowns(EnemyCharacterManager enemy)
+    {
+        foreach (var action in availableAttacks)
+        {
+            if (!action) continue;
+            if (!cooldownTracker.ContainsKey(action)) continue;
+
+            cooldownTracker[action] -= Time.deltaTime;
+            if(cooldownTracker[action] < 0)
+            {
+                cooldownTracker[action] = 0;
+            }
+        }
+    }
+    public bool AttackOffCooldown(EnemyAttackAction action)
+    {
+        if (cooldownTracker[action] == 0) return true;
+        else return false;
     }
 }

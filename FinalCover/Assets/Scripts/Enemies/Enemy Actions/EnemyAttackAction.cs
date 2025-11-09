@@ -5,14 +5,19 @@ public class EnemyAttackAction : ScriptableObject
 {
     [Header("Attack")]
     [SerializeField] private string attackAnimation;
+    [SerializeField] public EnemyAttackType enemyAttackType;
+    [SerializeField] public AttackType attackType;
 
     [Header("Combo Actions")]
     public EnemyAttackAction comboAction; //the combo action of this attack action
 
+    [Header("Attack Rotation Speed")]
+    public float attackTrackingSpeed = 20;
+
     [Header("Action Values")]
     public int attackWeight;
-    [SerializeField] AttackType attackType;
-    //attack can be repeated
+    public float cooldownTime;
+    public bool requiresLOS = true;
     public float actionRecoveryTime = 1.5f;
     public float minAttackAngle = -35;
     public float maxAttackAngle = 35;
@@ -22,5 +27,6 @@ public class EnemyAttackAction : ScriptableObject
     public void AttemptToPerformAction(EnemyCharacterManager enemy)
     {
         enemy.characterAnimationManager.PlayTargetActionAnimation(attackAnimation, true);
+        
     }
 }

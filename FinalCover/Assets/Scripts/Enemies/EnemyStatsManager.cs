@@ -3,7 +3,7 @@ using UnityEngine.TextCore.Text;
 
 public class EnemyStatsManager : CharacterStatManager
 {
-    EnemyCharacterManager enemy;
+    public EnemyCharacterManager enemy;
 
     protected override void Awake()
     {
@@ -18,9 +18,14 @@ public class EnemyStatsManager : CharacterStatManager
     {
         base.OnEnable();
         currentHealth.OnFloatChanged += CheckHP;
-
-        if (enemy.characterUIManager.hasFloatingHPBar)
-            currentHealth.OnFloatChanged += enemy.characterUIManager.OnHPChanged;
+        if (enemy.characterUIManager != null)
+        {
+            if (enemy.characterUIManager.hasFloatingHPBar)
+            {
+                currentHealth.OnFloatChanged += enemy.characterUIManager.OnHPChanged;
+            }
+        }
+            
     }
     protected override void OnDisable()
     {

@@ -48,8 +48,8 @@ public class PlayerCamera : MonoBehaviour
     }
     public void SetPlayerAsFollowTarget()
     {
-        vCam.Target.TrackingTarget = player.gameObject.transform;
-        vCam.Target.LookAtTarget = player.gameObject.transform;
+        vCam.Target.TrackingTarget = player.gameObject.GetComponentInChildren<CameraFollowTarget>().gameObject.transform;
+        vCam.Target.LookAtTarget = player.gameObject.GetComponentInChildren<CameraFollowTarget>().gameObject.transform;
     }
 
 

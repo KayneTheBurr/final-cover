@@ -15,6 +15,7 @@ public class EnemyCharacterManager : CharacterManager
 
     [Header("NavMesh Agent")]
     public NavMeshAgent navMeshAgent;
+    public Vector3 myTargetDestination;
 
     [Header("Current State")]
     [SerializeField] AIStates currentState;
@@ -46,6 +47,8 @@ public class EnemyCharacterManager : CharacterManager
     protected override void Start()
     {
         base.Start();
+        navMeshAgent.SetDestination(transform.position);
+        
     }
     protected override void OnEnable()
     {
@@ -71,19 +74,25 @@ public class EnemyCharacterManager : CharacterManager
 
         if (enemyCombatManager.currentTarget != null)
         {
-            enemyCombatManager.distanceFromTarget = Vector3.Distance(enemyCombatManager.currentTarget.transform.position, transform.position);
+            enemyCombatManager.distanceFromTarget = Vector3.Distance(
+                enemyCombatManager.currentTarget.transform.position, transform.position);
+
             enemyCombatManager.targetDirection = enemyCombatManager.currentTarget.transform.position - transform.position;
-            enemyCombatManager.viewableAngle = WorldUtilityManager.instance.GetAngleOfTarget(transform, enemyCombatManager.targetDirection);
+
+            enemyCombatManager.viewableAngle = WorldUtilityManager.instance.GetAngleOfTarget(
+                transform, enemyCombatManager.targetDirection);
         }
 
 
         if (navMeshAgent.enabled)
         {
             Vector3 agentDestination = navMeshAgent.destination;
+            myTargetDestination = agentDestination;
             float remainingDistance = Vector3.Distance(agentDestination, transform.position);
 
             if (remainingDistance > navMeshAgent.stoppingDistance)
             {
+                //Debug.Log("WE are moving!");
                 enemyMovementManager.isMoving.SetBool(true);
             }
             else
@@ -95,13 +104,12 @@ public class EnemyCharacterManager : CharacterManager
         {
             enemyMovementManager.isMoving.SetBool(false);
         }
-
-
     }
     protected override void Update()
     {
         base.Update();
         enemyCombatManager.HandleActionRecovery(this);
+        enemyCombatManager.HandleCooldowns(this);
     }
     protected override void FixedUpdate()
     {

@@ -4,11 +4,11 @@ using UnityEngine;
 public class AttackState : AIStates
 {
     [Header("Current Attack")]
-    [HideInInspector] public EnemyAttackAction currentAttack;
+    [SerializeField] public EnemyAttackAction currentAttack;
     [HideInInspector] public bool willPerformCombo = false;
 
     [Header("State Flags")]
-    protected bool hasPerformedAttack = false;
+    [SerializeField] protected bool hasPerformedAttack = false;
     protected bool hasPerformedCombo = false;
 
     [Header("Pivot After Attack")]
@@ -22,7 +22,7 @@ public class AttackState : AIStates
         if (enemy.enemyCombatManager.currentTarget.isDead) // go to idle if target is dead
             return SwitchState(enemy, enemy.idle);
 
-        enemy.enemyCombatManager.RotateTowardsTargetWhileAttacking(enemy);
+        enemy.enemyCombatManager.RotateTowardsTargetWhileAttacking(enemy, currentAttack);
 
         enemy.characterAnimationManager.UpdateAnimatorMovementParameters(0, 0, false);
 
@@ -57,13 +57,14 @@ public class AttackState : AIStates
         return SwitchState(enemy, enemy.combatStance);
 
     }
-    protected void PerformAttack(EnemyCharacterManager aiCharacter)
+    protected void PerformAttack(EnemyCharacterManager enemy)
     {
         hasPerformedAttack = true;
-        currentAttack.AttemptToPerformAction(aiCharacter);
+        currentAttack.AttemptToPerformAction(enemy);
 
         //set the recovery timer to the time associated with its current attack value 
-        aiCharacter.enemyCombatManager.actionRecoveryTimer = currentAttack.actionRecoveryTime;
+        enemy.enemyCombatManager.actionRecoveryTimer = currentAttack.actionRecoveryTime;
+        enemy.enemyCombatManager.StartCooldown(currentAttack);
     }
     protected override void ResetStateFlags(EnemyCharacterManager aiCharacter)
     {

@@ -4,7 +4,7 @@ public class CharacterUIManager : MonoBehaviour
 {
     [Header("UI")]
     //public UI_Character_HP_Bar characterHPBar;
-    public bool hasFloatingHPBar = true;
+    public bool hasFloatingHPBar = false;
 
     public void OnHPChanged(float oldValue, float newValue)
     {

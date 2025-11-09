@@ -28,10 +28,16 @@ public class PursueTargetState : AIStates
 
         enemy.enemyMovementManager.RotateTowardsAgent(enemy);
 
-        //if within range of target, switch to combat state
         //option 1 (better for ranged enemies or melee/ranged hybrid enemies)
-        //if(aiCharacter.aiCombatManager.distanceFromTarget <= aiCharacter.combatStance.maxEngagementDistance)
-        //    return SwitchState(aiCharacter, aiCharacter.combatStance);
+        
+        if(enemy.enemyCombatManager.currentTarget && //has a target
+            enemy.enemyCombatManager.HasRangedAttack() && //has a ranged attack
+            enemy.enemyCombatManager.HasRangedAttackAvailable( //has a ranged attack available 
+                enemy.transform.position, enemy.enemyCombatManager.currentTarget.transform.position))
+        {
+            //we have a ranged attack available, go to cvombat stance to use it 
+            return SwitchState(enemy, enemy.combatStance);
+        }
 
         //option 2 (melee enemies who will try to close the gap more)
         if (enemy.enemyCombatManager.distanceFromTarget <= enemy.navMeshAgent.stoppingDistance)
