@@ -16,7 +16,7 @@ MonoBehaviour:
   enemyAttackType: 0
   attackType: 0
   comboAction: {fileID: 11400000, guid: a31a064d3f2449944b24949635615a14, type: 2}
-  attackTrackingSpeed: 30
+  attackTrackingSpeed: 100
   attackWeight: 50
   cooldownTime: 0.5
   requiresLOS: 1
@@ -24,4 +24,4 @@ MonoBehaviour:
   minAttackAngle: -35
   maxAttackAngle: 35
   minAttackDistance: 0
-  maxAttackDistance: 5
+  maxAttackDistance: 4.25

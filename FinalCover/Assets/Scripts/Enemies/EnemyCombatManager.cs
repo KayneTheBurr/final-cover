@@ -35,7 +35,7 @@ public class EnemyCombatManager : CharacterCombatManager
         foreach(var attack in enemy.combatStance.enemyCharacterAttacks)
         {
             availableAttacks.Add(attack);
-            cooldownTracker.Add(attack, attack.cooldownTime);
+            cooldownTracker.Add(attack, 0);
         }
     }
     public void FindATargetViaLineOfSight(EnemyCharacterManager aiCharacter)
@@ -201,9 +201,11 @@ public class EnemyCombatManager : CharacterCombatManager
                     continue;
             }
             //if makes it down to here before exiting loop, has a tranged attack available
+            
             return true;
         }
         //no ranged attacks available
+        Debug.Log(false);
         return false;
     }
 

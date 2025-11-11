@@ -1,4 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class WolfCombatManager : EnemyCombatManager
 {
@@ -24,12 +29,39 @@ public class WolfCombatManager : EnemyCombatManager
     [SerializeField] float quickTurnThreshold = 150f;
     [SerializeField] float quickTurnRange = 2.5f;
     [SerializeField] float quickTurnCooldown = 3f;
-    private float _nextQuickTurn;
 
+    [Header("Arena Settings")]
+    [SerializeField] private float arenaRadius = 16f;
+    public Transform arenaCenter;
+
+    [Header("Icicle Ability Settings")]
+    public GameObject iciclePrefab;
+    public bool _spawnIcicles = false;
+    public List<GameObject> iciclesToSpawn;
+    public float icicleSpawnRadius;
+    [SerializeField] private int totalSpikes = 30;
+    [SerializeField] private float telegraphDuration = 2.0f;  //how long BEFORE ice ground starts spawning
+    [SerializeField] private float spreadDuration = 2.75f;     // how long the ice spots take to fulls spawn in 
+    [SerializeField] private float fadeLastT = 0.25f;
+    [SerializeField] private float eruptionSweep = 0.75f;     // time from first eruption to last 
+    [SerializeField] private float hitWindow = 0.10f;         // collider ON duration per spike
+    [SerializeField] private float ringRadius = 12f;
+    [SerializeField] private float minSeparation = 1.4f;      // distance between each vfx object 
+    [SerializeField] private float spawnRayHeight = 8f;
+    [SerializeField] private float despawnAfter = 2.5f;
+
+
+
+    protected override void Start()
+    {
+        base.Start();
+        SetBiteAttack01Damage();
+    }
     public override void PivotTowardsTarget(EnemyCharacterManager wolfChar)
     {
         //dont include base, want to do different things
-        
+        Debug.Log("Need to turn!");
+
         if (currentTarget == null) return;
         if (wolfChar.isPerformingAction) return;
 
@@ -87,19 +119,124 @@ public class WolfCombatManager : EnemyCombatManager
     {
         rightClawDamageCollider.EnableDamageCollider();
     }
-
     public void CloseRightHandDamageCollider()
     {
         rightClawDamageCollider.DisableDamageCollider();
     }
-
     public void OpenLeftHandDamageCollider()
     {
         leftClawDamageCollider.EnableDamageCollider();
     }
-
     public void CloseLeftHandDamageCollider()
     {
         leftClawDamageCollider.DisableDamageCollider();
+    }
+    public void StartIcicleAttack()
+    {
+        enemy.animator.speed = 0;
+        enemy.navMeshAgent.isStopped = true;
+        iciclesToSpawn.Clear();
+        StartCoroutine(IcicleSpawnRoutine());
+    }
+    private IEnumerator IcicleSpawnRoutine()
+    {
+        _spawnIcicles = true;
+
+        int N = Mathf.Max(2, totalSpikes);
+        float dSpawn = spreadDuration / (N - 1);
+        float dDet = eruptionSweep / (N - 1);
+        float detonateStart = spreadDuration + fadeLastT;
+
+        var spawnLocations = new List<(Vector3 pos, Quaternion rot, float dist2)>(N);
+        
+        var used = new HashSet<Vector2Int>();
+
+        for (int i = 0; i < N; i++) //for each spike we want to spawn
+        {
+            // Pick a ground point (unique-ish cells so they don't overlap)
+            Vector3 pos;
+            Quaternion rot;
+
+            for (int tries = 0; ; tries++) //try to find as place to spawn
+            {
+                var r = Random.Range(0f, Mathf.Max(0f, arenaRadius));
+                var theta = Random.Range(0f, Mathf.PI * 2f);
+                var flat = new Vector2(Mathf.Cos(theta), Mathf.Sin(theta)) * r; //pick place in 2d plane
+                var start = arenaCenter.position + new Vector3(flat.x, spawnRayHeight, flat.y); //point to raycast from to get floor height and normal
+
+                if (!Physics.Raycast(start, Vector3.down, out var hit, spawnRayHeight * 2f, WorldUtilityManager.instance.GetEnviroLayers(), QueryTriggerInteraction.Ignore))
+                {
+                    continue;
+                }
+                    //check and locate the point in a grid
+                    var key = new Vector2Int(Mathf.RoundToInt(hit.point.x / minSeparation), Mathf.RoundToInt(hit.point.z / minSeparation));
+
+                if (used.Add(key)) //if unused grid, add it in 
+                {
+                    pos = hit.point;
+                    rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                    spawnLocations.Add((pos, rot, (pos - transform.position).sqrMagnitude));
+                    break;
+                }
+                if (tries > 200) //in case no where is available dont crash unity please
+                {
+                    pos = start;
+                    rot = Quaternion.identity;
+                    spawnLocations.Add((pos, rot, (pos - transform.position).sqrMagnitude));
+                    break;
+                }
+            }
+        }
+
+        spawnLocations.Sort((a, b) => a.dist2.CompareTo(b.dist2));
+
+        for (int i = 0; i< spawnLocations.Count; i++)
+        {
+            var icicle = Instantiate(iciclePrefab, spawnLocations[i].pos, spawnLocations[i].rot);
+            var vfx = icicle.GetComponentInChildren<UnityEngine.VFX.VisualEffect>();
+            var col = icicle.GetComponent<Collider>(); // or damage collider mayeb
+            if (col) col.enabled = false; //make sure collider off at first 
+
+            // When THIS indicator appears and when it should erupt
+            float spawnDelayInst = i * dSpawn; //spawn delay times which spike it is in series
+            float detonateDelayInst = i * dDet; //detonate delay so they cascade
+            float delayToEruptFromNow = (detonateStart) + detonateDelayInst - spawnDelayInst; 
+
+            // set the spike spawn delay in vfx graph
+            if (vfx)
+            {
+                vfx.SetFloat("SpikeSpawnDelay", delayToEruptFromNow);
+            }
+            // Enable the collider exactly during the hit window
+            StartCoroutine(EnableColliderWindow(col, delayToEruptFromNow, hitWindow));
+
+            // Optional cleanup
+            StartCoroutine(DespawnAfter(icicle, delayToEruptFromNow + hitWindow + despawnAfter));
+
+            iciclesToSpawn.Add(icicle);
+
+            // Wait until it’s time to spawn the next indicator
+            yield return new WaitForSeconds(dSpawn);
+        }
+
+
+        _spawnIcicles = false;
+        enemy.animator.speed = 1;
+        enemy.navMeshAgent.isStopped = false;
+    }
+    
+
+    private IEnumerator EnableColliderWindow(Collider c, float delay, float window)
+    {
+        if (!c) yield break;
+        yield return new WaitForSeconds(delay);
+        c.enabled = true;
+        yield return new WaitForSeconds(window);
+        if (c) c.enabled = false;
+    }
+    private IEnumerator DespawnAfter(GameObject g, float t)
+    {
+        yield return new WaitForSeconds(t);
+        if (g) Destroy(g);
     }
 }

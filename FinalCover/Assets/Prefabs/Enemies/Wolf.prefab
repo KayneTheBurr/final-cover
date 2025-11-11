@@ -998,7 +998,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
@@ -1073,7 +1073,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
@@ -1417,7 +1417,7 @@ MonoBehaviour:
   viewableAngle: 0
   distanceFromTarget: 0
   targetDirection: {x: 0, y: 0, z: 0}
-  detectionRadius: 10
+  detectionRadius: 15
   minFOV: -35
   maxFOV: 35
   availableAttacks: []
@@ -2274,7 +2274,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
