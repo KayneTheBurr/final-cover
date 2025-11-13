@@ -16,6 +16,9 @@ public class CharacterStatManager : MonoBehaviour
     public int baseCharacterHP = 350;
     public int baseCharacterStamina = 70;
 
+    [Header("Flat Defenses")]
+    public int flatIceDefense;
+
     [Header("Stamina Regeneration")]
     public float staminaRegenTimer = 0;
     public float staminaRegenDelay = 2;

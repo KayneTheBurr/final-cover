@@ -38,7 +38,7 @@ public class DamageCollider : MonoBehaviour
     protected virtual void OnTriggerEnter(Collider col)
     {
         CharacterManager damageTarget = col.GetComponentInParent<CharacterManager>();
-        Debug.Log("hit");
+        //Debug.Log("hit");
 
         if (damageTarget != null)
         {

@@ -19,6 +19,10 @@ public class WorldUtilityManager : MonoBehaviour
     {
         //DontDestroyOnLoad(gameObject);
     }
+    private void Update()
+    {
+        
+    }
 
     public LayerMask GetCharacterLayers()
     {

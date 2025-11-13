@@ -76,6 +76,7 @@ public class TakeDamageEffect : InstantCharacterEffect
 
         }
         //check character for flat damage reduction, subtract them from the specific type of damage
+        iceDamage = Mathf.Max(0, iceDamage - character.characterStatManager.flatIceDefense);
 
         //check for character armor absorbtions, subtract percentage from damage
 

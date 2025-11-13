@@ -17,7 +17,7 @@ MonoBehaviour:
   attackType: 0
   comboAction: {fileID: 0}
   attackTrackingSpeed: 20
-  attackWeight: 50
+  attackWeight: 5
   cooldownTime: 10
   requiresLOS: 1
   actionRecoveryTime: 1

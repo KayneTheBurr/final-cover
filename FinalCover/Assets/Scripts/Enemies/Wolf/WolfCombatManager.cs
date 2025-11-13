@@ -31,6 +31,14 @@ public class WolfCombatManager : EnemyCombatManager
     [SerializeField] float quickTurnRange = 2.5f;
     [SerializeField] float quickTurnCooldown = 3f;
 
+    [Header("Quickturn Slash Settings")]
+    [SerializeField] GameObject quickTurnSlashEffect;
+    [SerializeField] float slashHeight = 2f;
+    [SerializeField] float slashWidth;
+    [SerializeField] float slashRange;
+    [SerializeField] float vfxForwardOffset = 1f;
+    [SerializeField] float quickTurnSlashModifier = 1f;
+
     [Header("Arena Settings")]
     [SerializeField] private float arenaRadius = 16f;
     public Transform arenaCenter;
@@ -66,6 +74,8 @@ public class WolfCombatManager : EnemyCombatManager
         base.Start();
         SetWolfDamageColliders();
     }
+
+    //Pivot and Quickturn
     public override void PivotTowardsTarget(EnemyCharacterManager wolfChar)
     {
         //dont include base, want to do different things
@@ -108,6 +118,55 @@ public class WolfCombatManager : EnemyCombatManager
         float baseLen = Mathf.Max(turn90Clip.length, 0.001f);
         return Mathf.Clamp(baseLen / targetTime, 0.5f, 3f);
     }
+    public void TriggerSlashEffect()
+    {
+        Debug.Log("Triggered a Quickturn Slash Event!");
+
+        var spawnPos = transform.position + Vector3.up * slashHeight + transform.forward * vfxForwardOffset;
+        var spawnRot = transform.rotation;
+
+        if (quickTurnSlashEffect)
+        {
+            GameObject slashObj = Instantiate(quickTurnSlashEffect, spawnPos, spawnRot);
+            StartCoroutine(DespawnAfter(slashObj, 0.3f));
+        }
+            
+        Vector3 baseCenter = transform.position + Vector3.up * slashHeight;
+        Vector3 tipCenter = baseCenter + transform.forward * slashRange;
+
+        // Grab any potential targets in the capsule
+        var hits = Physics.OverlapCapsule(
+            baseCenter, tipCenter, slashWidth * 0.5f, WorldUtilityManager.instance.GetCharacterLayers(), QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(baseCenter, (tipCenter - baseCenter), Color.cyan, 0.25f);
+
+        var charactersDamaged = new HashSet<CharacterManager>();
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            var cm = hits[i].GetComponentInParent<CharacterManager>();
+            if (cm && charactersDamaged.Add(cm) && cm != enemy)
+            {
+                SlashDamage(cm);
+            }
+        }
+    }
+    protected void SlashDamage(CharacterManager cm)
+    {
+        if (cm.characterCombatManager.isInvulnerable) return;
+
+        Debug.Log(cm.characterName.GetString());
+
+        TakeDamageEffect damageEffect = Instantiate(WorldCharacterEffectsManager.instance.takeDamageEffect);
+
+        damageEffect.physicalDamage = physicalDamage * quickTurnSlashModifier;
+        damageEffect.iceDamage = iceDamage * quickTurnSlashModifier;
+
+        cm.characterEffectsManager.ProcessInstantEffects(damageEffect);
+    }
+
+
+    //Collider Management
     public void SetWolfDamageColliders()
     {
         teethDamageCollider.physicalDamage = physicalDamage;
@@ -119,7 +178,6 @@ public class WolfCombatManager : EnemyCombatManager
         leftClawDamageCollider.physicalDamage = physicalDamage;
         leftClawDamageCollider.iceDamage = iceDamage;
     }
-    
     public void OpenTeethDamageCollider()
     {
         teethDamageCollider.EnableDamageCollider();
@@ -144,6 +202,9 @@ public class WolfCombatManager : EnemyCombatManager
     {
         leftClawDamageCollider.DisableDamageCollider();
     }
+
+
+    //Timed Magic Attacks
     public void StartIcicleAttack()
     {
         enemy.animator.speed = 0;
@@ -304,8 +365,6 @@ public class WolfCombatManager : EnemyCombatManager
         enemy.animator.speed = 1;
         enemy.navMeshAgent.isStopped = false;
     }
-    
-
     private IEnumerator EnableColliderWindow(Collider c, float delay, float window)
     {
         if (!c) yield break;
@@ -319,6 +378,4 @@ public class WolfCombatManager : EnemyCombatManager
         yield return new WaitForSeconds(t);
         if (g) Destroy(g);
     }
-
-
 }

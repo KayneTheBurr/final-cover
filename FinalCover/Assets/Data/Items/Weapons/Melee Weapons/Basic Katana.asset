@@ -51,8 +51,8 @@ MonoBehaviour:
   light_Roll_Attack_01_DamageModifier: 1
   light_BackStep_Attack_01_DamageModifier: 1.4
   poiseDamage: 5
-  baseStaminaCost: 15
-  lightAttackStaminaCostModifier: 0.6
+  baseStaminaCost: 12
+  lightAttackStaminaCostModifier: 0.5
   heavyAttackStaminaCostModifier: 1.2
   chargeAttackStaminaCostModifier: 2
   lightRunAttackStaminaCostModifier: 0.5
