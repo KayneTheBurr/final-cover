@@ -22,20 +22,31 @@ public class PlayerStatManager : CharacterStatManager
     protected override void Start()
     {
         base.Start();
-
-        //why calc here? when we spawn the character in need to calculate the stats iniitally until the 
         
+        SetNewMaxHealthValue(0, heart.GetInt());
+        SetNewMaxStaminaValue(0, heart.GetInt());
+       
+        //why calc here? when we spawn the character in need to calculate the stats iniitally until the 
+
     }
     protected override void OnEnable()
     {
-        currentStamina.OnFloatChanged += ResetManaRegenTimer;
+        base.OnEnable();
+        currentStamina.OnFloatChanged += ResetStaminaRegenTimer;
         currentMana.OnFloatChanged += ResetManaRegenTimer;
-        
+        currentHealth.OnFloatChanged += PlayerUIManager.instance.playerHUDManager.SetNewHealthValue;
+        currentStamina.OnFloatChanged += PlayerUIManager.instance.playerHUDManager.SetNewStaminaValue;
+        currentMana.OnFloatChanged += PlayerUIManager.instance.playerHUDManager.SetNewManaValue;
+
     }
     protected override void OnDisable()
     {
-        currentStamina.OnFloatChanged -= ResetManaRegenTimer;
+        base.OnDisable();
+        currentStamina.OnFloatChanged -= ResetStaminaRegenTimer;
         currentMana.OnFloatChanged -= ResetManaRegenTimer;
+        currentHealth.OnFloatChanged -= PlayerUIManager.instance.playerHUDManager.SetNewHealthValue;
+        currentStamina.OnFloatChanged -= PlayerUIManager.instance.playerHUDManager.SetNewStaminaValue;
+        currentMana.OnFloatChanged -= PlayerUIManager.instance.playerHUDManager.SetNewManaValue;
     }
     public void SetNewMaxHealthValue(int oldValue, int newValue)
     {

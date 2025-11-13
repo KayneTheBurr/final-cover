@@ -205,7 +205,7 @@ public class EnemyCombatManager : CharacterCombatManager
             return true;
         }
         //no ranged attacks available
-        Debug.Log(false);
+        //Debug.Log(false);
         return false;
     }
 

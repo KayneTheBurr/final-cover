@@ -24,7 +24,7 @@ public class WorldSFXManager : MonoBehaviour
     }
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     public AudioClip ChooseRandomSFXFromArray(AudioClip[] array)

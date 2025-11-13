@@ -29,6 +29,7 @@ public class UI_StatBar : MonoBehaviour
 
     public virtual void SetMaxStat(float maxValue)
     {
+        
         slider.maxValue = maxValue;
         slider.value = maxValue;
 
@@ -37,8 +38,8 @@ public class UI_StatBar : MonoBehaviour
             //scale the rect transform as the stat that increases your resource bars is increased 
             rectTransform.sizeDelta = new Vector2(widthScaleBarMultiplier * maxValue, rectTransform.sizeDelta.y);
 
-            //refresh player ui hud in their layer group 
-            PlayerUIManager.instance.playerHUDManager.RefreshHUD();
         }
+        //refresh player ui hud in their layer group 
+        if(PlayerUIManager.instance) PlayerUIManager.instance.playerHUDManager.RefreshHUD();
     }
 }

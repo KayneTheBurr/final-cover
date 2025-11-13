@@ -26,9 +26,9 @@ MonoBehaviour:
   canPerformCombo: 0
   chanceToPerformCombo: 25
   maxEngagementDistance: 5
-  meleePreferDist: 2.5
+  meleePreferDist: 4.5
   rangedPreferDist: 5
   pivotAngleThreshold: 35
-  weightCloseMelee: 2
-  weightFarRanged: 2
-  repeatPenalty: 1
+  weightCloseMelee: 20
+  weightFarRanged: 10
+  repeatPenalty: 20

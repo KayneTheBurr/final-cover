@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackAnimation: Wolf_Attack_Bite_Fwd
   enemyAttackType: 1
-  attackType: 0
+  attackType: 4
   comboAction: {fileID: 11400000, guid: 1a5a453d052d0824cbe5ef6239b5a279, type: 2}
   attackTrackingSpeed: 50
   attackWeight: 50

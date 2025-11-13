@@ -7,6 +7,7 @@ public class HeavyAttackWeaponItemAction : WeaponItemAction
     [SerializeField] string heavy_Attack_01 = "Main_Heavy_Attack_01";
     [SerializeField] string heavy_Attack_02 = "Main_Heavy_Attack_02";
     [SerializeField] string heavy_Attack_03 = "Main_Heavy_Attack_03";
+    [SerializeField] string heavy_Attack_04 = "Main_Heavy_Attack_04";
 
     [Header("Light Attacks")]
     [SerializeField] string light_Attack_01 = "Main_Light_Attack_01";
@@ -64,7 +65,7 @@ public class HeavyAttackWeaponItemAction : WeaponItemAction
             }
             else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == light_Attack_03)
             {
-                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.HeavyAttack03, heavy_Attack_03, true);
+                playerPerformingAction.playerAnimatorManager.PlayTargetAttackActionAnimation(weaponPerformingAction, AttackType.HeavyAttack04, heavy_Attack_04, true);
             }
             else if (playerPerformingAction.playerCombatManager.lastAttackAnimation == light_Attack_02)
             {

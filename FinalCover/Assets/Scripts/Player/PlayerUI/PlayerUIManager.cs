@@ -4,8 +4,8 @@ public class PlayerUIManager : MonoBehaviour
 {
     public static PlayerUIManager instance;
 
-    [HideInInspector] public PlayerHUDManager playerHUDManager;
-    //[HideInInspector] public PlayerUIPopUpManager playerUIPopUpManager;
+    [SerializeField] public PlayerHUDManager playerHUDManager;
+    [HideInInspector] public PlayerUIPopupManager playerUIPopupManager;
 
     private void Awake()
     {
@@ -19,11 +19,11 @@ public class PlayerUIManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        playerHUDManager = GetComponentInChildren<PlayerHUDManager>();
-        //playerUIPopUpManager = GetComponentInChildren<PlayerUIPopUpManager>();
+        //playerHUDManager = GetComponentInChildren<PlayerHUDManager>();
+        playerUIPopupManager = GetComponentInChildren<PlayerUIPopupManager>();
     }
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 }

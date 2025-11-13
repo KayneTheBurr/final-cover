@@ -29,16 +29,14 @@ public class PursueTargetState : AIStates
         enemy.enemyMovementManager.RotateTowardsAgent(enemy);
 
         //option 1 (better for ranged enemies or melee/ranged hybrid enemies)
-        Debug.Log(enemy.enemyCombatManager.HasRangedAttackAvailable( //has a ranged attack available 
-                enemy.transform.position, enemy.enemyCombatManager.currentTarget.transform.position));
-
+        
         if(enemy.enemyCombatManager.currentTarget && //has a target
             enemy.enemyCombatManager.HasRangedAttack() && //has a ranged attack
             enemy.enemyCombatManager.HasRangedAttackAvailable( //has a ranged attack available 
                 enemy.transform.position, enemy.enemyCombatManager.currentTarget.transform.position))
         {
             //we have a ranged attack available, go to cvombat stance to use it 
-            Debug.Log("CheckForRangedAttack");
+            
             return SwitchState(enemy, enemy.combatStance);
         }
 

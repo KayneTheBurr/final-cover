@@ -17,6 +17,12 @@ public class CharacterManager : MonoBehaviour
     [HideInInspector] public CharacterSFXManager characterSFXManager;
     [HideInInspector] public CharacterUIManager characterUIManager;
 
+    [Header("Character Name")]
+    public ObservableVariable characterName = new ObservableVariable("");
+
+    [Header("Character Group")]
+    public CharacterGroup characterGroup;
+
     [Header("Character Flags")]
     public bool isDead = false;
     public bool isPerformingAction;
@@ -25,16 +31,12 @@ public class CharacterManager : MonoBehaviour
     public bool canMove = true;
     public bool applyRootMotion = false;
 
-    [Header("Character Group")]
-    public CharacterGroup characterGroup;
-
     [Header("Animator Values")]
     public float horizontalMovement;
     public float verticalMovement;
     public float moveAmount;
 
     
-
     protected virtual void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -48,7 +50,6 @@ public class CharacterManager : MonoBehaviour
         characterUIManager = GetComponent<CharacterUIManager>();
         characterEffectsManager = GetComponent<CharacterEffectsManager>();
     }
-
     protected virtual void Start()
     {
         IgnoreMyOwnColliders();

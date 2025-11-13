@@ -160,7 +160,7 @@ public class InputManager : MonoBehaviour
     }
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += OnSceneChange;
         //instance.enabled = false;
 

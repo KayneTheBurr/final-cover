@@ -13,11 +13,12 @@ public class WolfCombatManager : EnemyCombatManager
     [SerializeField] WolfDamageCollider leftClawDamageCollider;
 
     [Header("Damage")]
-    [SerializeField] float physicalDamage = 15;
-    [SerializeField] float poisonDamage = 10;
-    [SerializeField] float biteAttack_01_DamageModifier = 1f;
-    [SerializeField] float swipeAttack_01_DamageModifier = 1.2f;
-    [SerializeField] float swipeAttack_02_DamageModifier = 1.5f;
+    [SerializeField] public float physicalDamage = 15;
+    [SerializeField] public float iceDamage = 10;
+    [SerializeField] public float lungeBiteAttack_01_DamageModifier = 1f;
+    [SerializeField] public float sideBiteAttack_01_DamageModifier = 1.2f;
+    [SerializeField] public float swipeAttack_01_DamageModifier = 1f;
+    [SerializeField] public float swipeAttack_02_DamageModifier = 1.5f;
 
     [Header("Wolf Turn Values")]
     [SerializeField] string turnLeftState = "Wolf_Combat_Turn_L";
@@ -33,6 +34,7 @@ public class WolfCombatManager : EnemyCombatManager
     [Header("Arena Settings")]
     [SerializeField] private float arenaRadius = 16f;
     public Transform arenaCenter;
+    [SerializeField] private float spawnRayHeight = 8f;
 
     [Header("Icicle Ability Settings")]
     public GameObject iciclePrefab;
@@ -40,28 +42,34 @@ public class WolfCombatManager : EnemyCombatManager
     public List<GameObject> iciclesToSpawn;
     public float icicleSpawnRadius;
     [SerializeField] private int totalSpikes = 30;
-    [SerializeField] private float telegraphDuration = 2.0f;  //how long BEFORE ice ground starts spawning
+    [SerializeField] private float icicleTelegraphDuration = 2.0f;  //how long BEFORE ice ground starts spawning
     [SerializeField] private float spreadDuration = 2.75f;     // how long the ice spots take to fulls spawn in 
     [SerializeField] private float fadeLastT = 0.25f;
     [SerializeField] private float eruptionSweep = 0.75f;     // time from first eruption to last 
     [SerializeField] private float hitWindow = 0.10f;         // collider ON duration per spike
     [SerializeField] private float ringRadius = 12f;
     [SerializeField] private float minSeparation = 1.4f;      // distance between each vfx object 
-    [SerializeField] private float spawnRayHeight = 8f;
     [SerializeField] private float despawnAfter = 2.5f;
 
-
+    [Header("Ice Beams Settings")]
+    public GameObject iceBeamPrefab;
+    [SerializeField] private int totalBeams = 8;
+    public List<GameObject> iceBeamsToSpawn;
+    public float iceBeamSpawnRadius;
+    [SerializeField] float iceBeamHitTime = 0.75f;
+    [SerializeField] float iceBeamWaveTime = 0.25f;
+    [SerializeField] int numberOfWaves = 4;
+    public float iceBeamDeswapwnTime = .5f;
 
     protected override void Start()
     {
         base.Start();
-        SetBiteAttack01Damage();
+        SetWolfDamageColliders();
     }
     public override void PivotTowardsTarget(EnemyCharacterManager wolfChar)
     {
         //dont include base, want to do different things
-        Debug.Log("Need to turn!");
-
+        
         if (currentTarget == null) return;
         if (wolfChar.isPerformingAction) return;
 
@@ -84,7 +92,6 @@ public class WolfCombatManager : EnemyCombatManager
         // 2) Regular in-place turn (pick side by sign)
         if (absA >= turnThreshold)
         {
-            Debug.Log("Turn Normally?");
             string state = angle >= 0f ? turnRightState : turnLeftState;
             wolfChar.animator.speed = SpeedForTurn(Mathf.Min(absA, 90f));
             wolfChar.characterAnimationManager.PlayTargetActionAnimation(state, true);
@@ -101,12 +108,18 @@ public class WolfCombatManager : EnemyCombatManager
         float baseLen = Mathf.Max(turn90Clip.length, 0.001f);
         return Mathf.Clamp(baseLen / targetTime, 0.5f, 3f);
     }
-    public void SetBiteAttack01Damage()
+    public void SetWolfDamageColliders()
     {
-        teethDamageCollider.physicalDamage = physicalDamage * biteAttack_01_DamageModifier;
-        teethDamageCollider.poisonDamage = poisonDamage * biteAttack_01_DamageModifier;
+        teethDamageCollider.physicalDamage = physicalDamage;
+        teethDamageCollider.iceDamage = iceDamage;
 
+        rightClawDamageCollider.physicalDamage = physicalDamage;
+        rightClawDamageCollider.iceDamage = iceDamage;
+
+        leftClawDamageCollider.physicalDamage = physicalDamage;
+        leftClawDamageCollider.iceDamage = iceDamage;
     }
+    
     public void OpenTeethDamageCollider()
     {
         teethDamageCollider.EnableDamageCollider();
@@ -138,6 +151,13 @@ public class WolfCombatManager : EnemyCombatManager
         iciclesToSpawn.Clear();
         StartCoroutine(IcicleSpawnRoutine());
     }
+    public void StartIceBeamsAttack()
+    {
+        enemy.animator.speed = 0;
+        enemy.navMeshAgent.isStopped = true;
+        iceBeamsToSpawn.Clear();
+        StartCoroutine(IceBeamSpawnRoutine());
+    }
     private IEnumerator IcicleSpawnRoutine()
     {
         _spawnIcicles = true;
@@ -168,8 +188,9 @@ public class WolfCombatManager : EnemyCombatManager
                 {
                     continue;
                 }
-                    //check and locate the point in a grid
-                    var key = new Vector2Int(Mathf.RoundToInt(hit.point.x / minSeparation), Mathf.RoundToInt(hit.point.z / minSeparation));
+
+                //check and locate the point in a grid
+                var key = new Vector2Int(Mathf.RoundToInt(hit.point.x / minSeparation), Mathf.RoundToInt(hit.point.z / minSeparation));
 
                 if (used.Add(key)) //if unused grid, add it in 
                 {
@@ -224,6 +245,65 @@ public class WolfCombatManager : EnemyCombatManager
         enemy.animator.speed = 1;
         enemy.navMeshAgent.isStopped = false;
     }
+    private IEnumerator IceBeamSpawnRoutine()
+    {
+        int N = Mathf.Max(2, totalBeams);
+        var spawnLocations = new List<(Vector3 pos, Quaternion rot)>(N);
+        int waveCount = 0;
+
+        while (waveCount < numberOfWaves)
+        {
+
+            spawnLocations.Clear();
+
+            for (int i = 0; i < N; i++) //for each spike we want to spawn
+            {
+                Vector3 pos;
+                Quaternion rot;
+
+                for (int tries = 0; ; tries++) //try to find as place to spawn
+                {
+                    var r = Random.Range(0f, Mathf.Max(0f, arenaRadius));
+                    var theta = Random.Range(0f, Mathf.PI * 2f);
+                    Vector2 flat = new Vector2(Mathf.Cos(theta), Mathf.Sin(theta)) * r; //pick place in 2d plane
+                    var start = arenaCenter.position + new Vector3(flat.x, spawnRayHeight, flat.y); //point to raycast from to get floor height and normal
+
+                    if (Physics.Raycast(start, Vector3.down, out var hit, spawnRayHeight * 2f, WorldUtilityManager.instance.GetEnviroLayers(), QueryTriggerInteraction.Ignore))
+                    {
+                        pos = hit.point;
+                        rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                        spawnLocations.Add((pos, rot));
+                        break;
+                    }
+
+                    if (tries > 200) break;
+                }
+            }
+
+            for (int i = 0; i < spawnLocations.Count; i++) //spawn an ice beam at each of the locations
+            {
+                var iceBeam = Instantiate(iceBeamPrefab, spawnLocations[i].pos, spawnLocations[i].rot);
+                var vfx = iceBeam.GetComponentInChildren<UnityEngine.VFX.VisualEffect>();
+                var col = iceBeam.GetComponent<Collider>(); // or damage collider mayeb
+                if (col) col.enabled = false; //make sure collider off at first 
+
+                // Enable the collider exactly during the hit window
+                StartCoroutine(EnableColliderWindow(col, iceBeamHitTime, hitWindow));
+
+                // Optional cleanup
+                StartCoroutine(DespawnAfter(iceBeam, iceBeamHitTime + hitWindow + iceBeamDeswapwnTime));
+
+                iceBeamsToSpawn.Add(iceBeam);
+                yield return new WaitForSeconds(0.1f);
+            }
+            
+            waveCount++;
+            yield return new WaitForSeconds(iceBeamWaveTime);
+        }
+
+        enemy.animator.speed = 1;
+        enemy.navMeshAgent.isStopped = false;
+    }
     
 
     private IEnumerator EnableColliderWindow(Collider c, float delay, float window)
@@ -239,4 +319,6 @@ public class WolfCombatManager : EnemyCombatManager
         yield return new WaitForSeconds(t);
         if (g) Destroy(g);
     }
+
+
 }

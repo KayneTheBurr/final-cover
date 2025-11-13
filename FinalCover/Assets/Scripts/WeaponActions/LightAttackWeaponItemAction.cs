@@ -65,7 +65,6 @@ public class LightAttackWeaponItemAction : WeaponItemAction
 
     private void PerformLightAttack(PlayerManager playerPerformingAction, WeaponItem weaponPerformingAction)
     {
-        
         //if we are attacking and we can perform a combo, perform the combo attack
         if (playerPerformingAction.playerCombatManager.canComboWithMainHandWeapon && playerPerformingAction.isPerformingAction)
         {

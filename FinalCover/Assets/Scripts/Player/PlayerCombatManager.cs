@@ -22,10 +22,16 @@ public class PlayerCombatManager : CharacterCombatManager
     protected override void OnEnable()
     {
         base.OnEnable();
+        currentRightWeaponID.OnStringChanged += OnCurrentRightHandWeaponIDChange;
+        currentLeftWeaponID.OnStringChanged += OnCurrentLeftHandWeaponIDChange;
+        currentWeaponBeingUsedID.OnStringChanged += OnCurrentWeaponBeingUsedIDChange;
     }
     protected override void OnDisable()
     {
         base.OnDisable();
+        currentRightWeaponID.OnStringChanged -= OnCurrentRightHandWeaponIDChange;
+        currentLeftWeaponID.OnStringChanged -= OnCurrentLeftHandWeaponIDChange;
+        currentWeaponBeingUsedID.OnStringChanged -= OnCurrentWeaponBeingUsedIDChange;
     }
 
     public void PerformWeaponBasedAction(WeaponItemAction weaponAction, WeaponItem weaponPerformingAction)
@@ -51,8 +57,9 @@ public class PlayerCombatManager : CharacterCombatManager
     public void DrainStaminaBasedOnAttack()
     {
         if (!player) return;
+        
         if (currentWeaponBeingUsed == null) return;
-
+        
         float staminaDrained = 0f;
 
         switch (currentAttackType)
@@ -63,16 +70,43 @@ public class PlayerCombatManager : CharacterCombatManager
             case AttackType.LightAttack02:
                 staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightAttackStaminaCostModifier;
                 break;
+            case AttackType.LightAttack03:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightAttackStaminaCostModifier;
+                break;
+            case AttackType.LightAttack04:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightAttackStaminaCostModifier;
+                break;
+            case AttackType.LightAttack05:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.lightAttackStaminaCostModifier;
+                break;
             case AttackType.HeavyAttack01:
                 staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
                 break;
             case AttackType.HeavyAttack02:
                 staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
                 break;
+            case AttackType.HeavyAttack03:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
+                break;
+            case AttackType.HeavyAttack04:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
+                break;
+            case AttackType.HeavyAttack05:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.heavyAttackStaminaCostModifier;
+                break;
             case AttackType.ChargeAttack01:
                 staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
                 break;
             case AttackType.ChargeAttack02:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
+                break;
+            case AttackType.ChargeAttack03:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
+                break;
+            case AttackType.ChargeAttack04:
+                staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
+                break;
+            case AttackType.ChargeAttack05:
                 staminaDrained = currentWeaponBeingUsed.baseStaminaCost * currentWeaponBeingUsed.chargeAttackStaminaCostModifier;
                 break;
             case AttackType.LightRunningAttack01:
@@ -88,7 +122,7 @@ public class PlayerCombatManager : CharacterCombatManager
                 break;
         }
 
-        //Debug.Log("Stamina Drained" + staminaDrained);
+        //Debug.Log($"Used {staminaDrained} stamina on attack");
 
         player.playerStatsManager.currentStamina.SetFloat(
             player.playerStatsManager.currentStamina.GetFloat() - staminaDrained);
@@ -140,6 +174,7 @@ public class PlayerCombatManager : CharacterCombatManager
     }
     public void OnCurrentWeaponBeingUsedIDChange(string oldID, string newID)
     {
+        //Debug.Log(newID);
         WeaponItem newWeapon = Instantiate(WorldItemDataBase.instance.GetWeaponByID(newID));
         player.playerCombatManager.currentWeaponBeingUsed = newWeapon;
 

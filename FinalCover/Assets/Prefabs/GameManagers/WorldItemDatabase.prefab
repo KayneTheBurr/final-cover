@@ -46,7 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - {fileID: 11400000, guid: 324a29769790dea44b71e7eb18dac3c9, type: 2}
+  - {fileID: 11400000, guid: 084c0c436a4108541880f7075e556b02, type: 2}
   unarmedWeapon: {fileID: 11400000, guid: 324a29769790dea44b71e7eb18dac3c9, type: 2}
   weaponEntries:
   - weaponID: WPN_FST_001
     weaponItem: {fileID: 11400000, guid: 324a29769790dea44b71e7eb18dac3c9, type: 2}
+  - weaponID: WPN_KAT_001
+    weaponItem: {fileID: 11400000, guid: 084c0c436a4108541880f7075e556b02, type: 2}

@@ -59,6 +59,7 @@ public class PlayerEquipmentManager : CharacterEquipmentManager
             rightWeaponManager = rightHandWeaponModel.GetComponent<WeaponManager>();
             rightWeaponManager.SetWeaponDamage(player, player.playerInventoryManager.currentRightHandWeapon);
             player.playerAnimatorManager.UpdateAnimatorController(player.playerInventoryManager.currentRightHandWeapon.weaponOverrideAnimator);
+            
 
         }
     }

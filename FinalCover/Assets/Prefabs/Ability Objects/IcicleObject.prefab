@@ -178,11 +178,11 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 0.22
   m_Height: 1.3
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
@@ -202,7 +202,7 @@ MonoBehaviour:
   physicalDamage: 0
   fireDamage: 0
   lightningDamage: 0
-  iceDamage: 10
+  iceDamage: 80
   poisonDamage: 0
   decayDamage: 0
   shadowDamage: 0

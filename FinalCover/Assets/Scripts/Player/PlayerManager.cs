@@ -9,9 +9,6 @@ public class PlayerManager : CharacterManager
     [HideInInspector] public PlayerInventoryManager playerInventoryManager;
     [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
 
-    public ObservableVariable characterName = new ObservableVariable("");
-
-
     protected override void Awake()
     {
         //do character manager awake stuff 
@@ -30,7 +27,7 @@ public class PlayerManager : CharacterManager
     protected override void Start()
     {
         base.Start();
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         InputManager.instance.player = this;
         PlayerCamera.instance.player = this;

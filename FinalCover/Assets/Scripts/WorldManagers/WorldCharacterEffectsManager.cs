@@ -25,6 +25,6 @@ public class WorldCharacterEffectsManager : MonoBehaviour
     }
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 }

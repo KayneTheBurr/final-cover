@@ -50,6 +50,7 @@ MonoBehaviour:
   allowLockOn: 0
   allowDodge: 1
   allowWeaponSwap: 0
+  allowChargedHeavyAttacks: 0
   movement_Input: {x: 0, y: 0}
   horizontal_Input: 0
   vertical_Input: 0

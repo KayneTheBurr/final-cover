@@ -1320,7 +1320,6 @@ GameObject:
   - component: {fileID: 3364124454333033645}
   - component: {fileID: 3540806358513640720}
   - component: {fileID: 3396881621608248545}
-  - component: {fileID: 4015493061981013702}
   m_Layer: 6
   m_Name: Player_Base
   m_TagString: Player
@@ -1674,9 +1673,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentRightHandWeapon: {fileID: 11400000, guid: 084c0c436a4108541880f7075e556b02, type: 2}
-  currentLeftHandWeapon: {fileID: 11400000, guid: 084c0c436a4108541880f7075e556b02, type: 2}
+  currentLeftHandWeapon: {fileID: 0}
   weaponsInRightHandSlots:
-  - {fileID: 11400000, guid: 084c0c436a4108541880f7075e556b02, type: 2}
   - {fileID: 11400000, guid: 084c0c436a4108541880f7075e556b02, type: 2}
   rightHandWeaponIndex: 0
   weaponsInLeftHandSlots: []
@@ -1857,22 +1855,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasFloatingHPBar: 0
---- !u!208 &4015493061981013702
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4124725828931729579}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Shape: 0
-  m_Extents: {x: 0.3, y: 1, z: 0.3}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 0
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &4216326815397705891
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,6 +31,7 @@ public class MeleeWeaponDamageCollider : DamageCollider
 
     protected override void OnTriggerEnter(Collider col)
     {
+        
         CharacterManager damageTarget = col.GetComponentInParent<CharacterManager>();
 
         if (damageTarget != null)
@@ -45,7 +46,6 @@ public class MeleeWeaponDamageCollider : DamageCollider
 
             //check if target is invulnerable
             if (damageTarget.characterCombatManager.isInvulnerable) return;
-
 
             DamageTarget(damageTarget);
 
@@ -105,7 +105,7 @@ public class MeleeWeaponDamageCollider : DamageCollider
             default:
                 break;
         }
-
+        //Debug.Log("Dealt: " + damageEffect.physicalDamage + " damage!");
         damageTarget.characterEffectsManager.ProcessInstantEffects(damageEffect);
     }
 

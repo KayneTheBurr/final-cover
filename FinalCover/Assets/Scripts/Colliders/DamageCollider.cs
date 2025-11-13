@@ -55,7 +55,6 @@ public class DamageCollider : MonoBehaviour
 
             DamageTarget(damageTarget);
 
-            Debug.Log(damageTarget);
         }
     }
 

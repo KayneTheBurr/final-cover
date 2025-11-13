@@ -43,7 +43,7 @@ public class PlayerCamera : MonoBehaviour
     private void Start()
     {
         vCam = GetComponent<CinemachineCamera>();
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         //cameraZPos = cam.transform.localPosition.z; //removed for cinemachine
     }
     public void SetPlayerAsFollowTarget()

@@ -21,7 +21,7 @@ public class WorldActionManager : MonoBehaviour
     }
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         //DOES NOT WORK WITH STRINGS, USE CSV IMPORTER
         //for (int i = 0; i < weaponItemActions.Length; i++)

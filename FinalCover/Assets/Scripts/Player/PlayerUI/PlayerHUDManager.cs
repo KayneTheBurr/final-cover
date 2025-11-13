@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,12 @@ public class PlayerHUDManager : MonoBehaviour
     [SerializeField] Image rightWeaponQuickSlotIcon;
     [SerializeField] Image leftWeaponQuickSlotIcon;
 
+    [Header("Boss Panel")]
+    public GameObject bossPanel;
+    public TMP_Text bossNameLabel;
+    public TMP_Text bossNameLabelShadow;
+    public Slider bossHPBar;
+
     public void RefreshHUD()
     {
         healthBar.gameObject.SetActive(false);
@@ -21,7 +28,7 @@ public class PlayerHUDManager : MonoBehaviour
 
     public void SetNewHealthValue(float oldHealth, float newHealth)
     {
-
+        
         healthBar.SetStat(newHealth);
     }
     public void SetMaxHealthValue(float maxHealth)
@@ -30,12 +37,21 @@ public class PlayerHUDManager : MonoBehaviour
     }
     public void SetNewStaminaValue(float oldStamina, float newStamina)
     {
-        //Debug.Log("set stamina");
+        
         staminaBar.SetStat(newStamina);
     }
     public void SetMaxStaminaValue(float maxStamina)
     {
         staminaBar.SetMaxStat(maxStamina);
+    }
+    public void SetNewManaValue(float oldMana, float newMana)
+    {
+        Debug.Log("set stamina");
+        staminaBar.SetStat(newMana);
+    }
+    public void SetMaxManaValue(float maxMana)
+    {
+        staminaBar.SetMaxStat(maxMana);
     }
 
     public void SetRightWeaponQuickSlotIcon(string weaponID)

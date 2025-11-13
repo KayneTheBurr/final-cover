@@ -28,15 +28,29 @@ public class WeaponItem : Item
     public int decayDamage = 0;
     public int shadowDamage = 0;
 
-    [Header("Attack Modifiers")]
+    [Header("Light Attack Modifiers")]
     //stat scaling
     //weapon modifiers
     public float light_Attack_01_DamageModifier = 0.8f;
     public float light_Attack_02_DamageModifier = 0.9f;
+    public float light_Attack_03_DamageModifier = 0.8f;
+    public float light_Attack_04_DamageModifier = 0.9f;
+    public float light_Attack_05_DamageModifier = 0.9f;
+    [Header("Heavy Attack Modifiers")]
     public float heavy_Attack_01_DamageModifier = 1.3f;
     public float heavy_Attack_02_DamageModifier = 1.4f;
+    public float heavy_Attack_03_DamageModifier = 1.3f;
+    public float heavy_Attack_04_DamageModifier = 1.4f;
+    public float heavy_Attack_05_DamageModifier = 1.4f;
+
+    [Header("Charge Attack Modifiers")]
     public float charge_Attack_01_DamageModifier = 2.0f;
     public float charge_Attack_02_DamageModifier = 2.2f;
+    public float charge_Attack_03_DamageModifier = 2.0f;
+    public float charge_Attack_04_DamageModifier = 2.2f;
+    public float charge_Attack_05_DamageModifier = 2.2f;
+
+    [Header("Movement Attack Modifiers")]
     public float light_Run_Attack_01_DamageModifier = 0.75f;
     public float light_Roll_Attack_01_DamageModifier = 1.0f;
     public float light_BackStep_Attack_01_DamageModifier = 1.4f;

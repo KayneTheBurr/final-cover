@@ -57,7 +57,7 @@ public class WorldItemDataBase : MonoBehaviour
 
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     //public WeaponItem GetWeaponByID(int ID) this needs to be updated is using string based IDs

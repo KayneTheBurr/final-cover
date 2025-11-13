@@ -13,6 +13,9 @@ public class CharacterStatManager : MonoBehaviour
     public ObservableVariable maxMana = new ObservableVariable(100);
     public ObservableVariable currentMana = new ObservableVariable(100f);
 
+    public int baseCharacterHP = 350;
+    public int baseCharacterStamina = 70;
+
     [Header("Stamina Regeneration")]
     public float staminaRegenTimer = 0;
     public float staminaRegenDelay = 2;
@@ -40,7 +43,7 @@ public class CharacterStatManager : MonoBehaviour
     {
         float health = 0;
 
-        health = vitality * 15;
+        health = baseCharacterHP + (vitality * 15);
 
         return Mathf.RoundToInt(health);
 
@@ -57,8 +60,8 @@ public class CharacterStatManager : MonoBehaviour
     {
         float stamina = 0;
 
-        stamina = endurance * 10;
-        
+        stamina = baseCharacterStamina + (endurance * 3);
+
         return Mathf.RoundToInt(stamina);
         
     }
@@ -67,6 +70,7 @@ public class CharacterStatManager : MonoBehaviour
         if (currentHealth.GetFloat() <= 0)
         {
             character.StartCoroutine(character.HandleDeathEvents());
+            Debug.Log($"{character.characterName.GetString()} has died!");
         }
 
         if (currentHealth.GetFloat() > maxHealth.GetInt())

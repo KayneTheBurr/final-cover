@@ -18,14 +18,14 @@ public class EnemyStatsManager : CharacterStatManager
     {
         base.OnEnable();
         currentHealth.OnFloatChanged += CheckHP;
+
         if (enemy.characterUIManager != null)
         {
             if (enemy.characterUIManager.hasFloatingHPBar)
             {
                 currentHealth.OnFloatChanged += enemy.characterUIManager.OnHPChanged;
             }
-        }
-            
+        } 
     }
     protected override void OnDisable()
     {
@@ -34,5 +34,9 @@ public class EnemyStatsManager : CharacterStatManager
 
         if (enemy.characterUIManager.hasFloatingHPBar)
             currentHealth.OnFloatChanged -= enemy.characterUIManager.OnHPChanged;
+    }
+    public void OnBossHPChanged(float oldHP, float newHP)
+    {
+        if (enemy.bossHPBar) enemy.bossHPBar.value = newHP;
     }
 }
