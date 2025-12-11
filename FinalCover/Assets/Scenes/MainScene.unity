@@ -3000,8 +3000,54 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3745677115280297190, guid: 009bfdcbf43056e4baacce4494b47114, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1123279512}
   m_SourcePrefab: {fileID: 100100000, guid: 009bfdcbf43056e4baacce4494b47114, type: 3}
+--- !u!1 &1123279510 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3745677115280297190, guid: 009bfdcbf43056e4baacce4494b47114, type: 3}
+  m_PrefabInstance: {fileID: 1123279509}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1123279511 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2805178701087453719, guid: 009bfdcbf43056e4baacce4494b47114, type: 3}
+  m_PrefabInstance: {fileID: 1123279509}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1123279512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123279510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59bb6e4823bcb5947b82628fd4258879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canSee: 1
+  eye: {fileID: 1123279511}
+  vieYawOffsetDeg: 94
+  SightRange: 9.5
+  fovDeg: 95
+  losBlockMask:
+    serializedVersion: 2
+    m_Bits: 0
+  leftLineDuration: 0.25
+  canHear: 1
+  hearingRadius: 12
+  hearingFalloff: 1
+  proximityRange: 3
+  DetectionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  awareness: {fileID: 0}
+  bb: {fileID: 0}
+  debugEnabled: 1
+  debugLayers: -1
+  IsWithinPlayerRange: 1
 --- !u!1 &1137310244
 GameObject:
   m_ObjectHideFlags: 0
