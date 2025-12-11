@@ -38,59 +38,86 @@ public class EnemyCombatManager : CharacterCombatManager
             cooldownTracker.Add(attack, 0);
         }
     }
-    public void FindATargetViaLineOfSight(EnemyCharacterManager aiCharacter)
-    {
-        if (currentTarget != null) return;
+    //public void FindATargetViaLineOfSight(EnemyCharacterManager aiCharacter)
+    //{
+    //    if (currentTarget != null) return;
 
-        Collider[] colliders = Physics.OverlapSphere(aiCharacter.transform.position, detectionRadius, WorldUtilityManager.instance.GetCharacterLayers());
+    //    Collider[] colliders = Physics.OverlapSphere(aiCharacter.transform.position, detectionRadius, WorldUtilityManager.instance.GetCharacterLayers());
         
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            CharacterManager targetCharacter = colliders[i].transform.GetComponent<CharacterManager>();
+    //    for (int i = 0; i < colliders.Length; i++)
+    //    {
+    //        CharacterManager targetCharacter = colliders[i].transform.GetComponent<CharacterManager>();
 
-            if (targetCharacter == null) continue; //if not a character pass
-            if (targetCharacter == aiCharacter) continue; //if its me pass
-            if (targetCharacter.isDead) continue; //skip dead characters
+    //        if (targetCharacter == null) continue; //if not a character pass
+    //        if (targetCharacter == aiCharacter) continue; //if its me pass
+    //        if (targetCharacter.isDead) continue; //skip dead characters
 
-            //check if we are on teh same "team"
-            if (WorldUtilityManager.instance.CanIDamageThisTarget(aiCharacter.characterGroup, targetCharacter.characterGroup))
-            {
-                //if a potential target is found, is it in front of us?
-                Vector3 targetsDirection = targetCharacter.transform.position - aiCharacter.transform.position;
-                float angleOfPotentialTarget = Vector3.Angle(targetsDirection, aiCharacter.transform.forward);
+    //        //check if we are on teh same "team"
+    //        if (WorldUtilityManager.instance.CanIDamageThisTarget(aiCharacter.characterGroup, targetCharacter.characterGroup))
+    //        {
+    //            //if a potential target is found, is it in front of us?
+    //            Vector3 targetsDirection = targetCharacter.transform.position - aiCharacter.transform.position;
+    //            float angleOfPotentialTarget = Vector3.Angle(targetsDirection, aiCharacter.transform.forward);
 
-                if (angleOfPotentialTarget > minFOV && angleOfPotentialTarget < maxFOV) //if in FOV
-                {
+    //            if (angleOfPotentialTarget > minFOV && angleOfPotentialTarget < maxFOV) //if in FOV
+    //            {
                     
-                    Debug.DrawLine(aiCharacter.characterCombatManager.lockOnTransform.position,
-                        targetCharacter.characterCombatManager.lockOnTransform.position, Color.green);
+    //                Debug.DrawLine(aiCharacter.characterCombatManager.lockOnTransform.position,
+    //                    targetCharacter.characterCombatManager.lockOnTransform.position, Color.green);
 
-                    //last, check for linecast if the target is obscured
-                    if (Physics.Linecast(aiCharacter.characterCombatManager.lockOnTransform.position,
-                            targetCharacter.characterCombatManager.lockOnTransform.position,
-                            WorldUtilityManager.instance.GetEnviroLayers()))
-                    {
-                        Debug.DrawLine(aiCharacter.characterCombatManager.lockOnTransform.position,
-                            targetCharacter.characterCombatManager.lockOnTransform.position, Color.red);
-                    }
-                    else
-                    {
-                        targetsDirection = targetCharacter.transform.position - transform.position;
-                        viewableAngle = WorldUtilityManager.instance.GetAngleOfTarget(transform, targetsDirection);
+    //                //last, check for linecast if the target is obscured
+    //                if (Physics.Linecast(aiCharacter.characterCombatManager.lockOnTransform.position,
+    //                        targetCharacter.characterCombatManager.lockOnTransform.position,
+    //                        WorldUtilityManager.instance.GetEnviroLayers()))
+    //                {
+    //                    Debug.DrawLine(aiCharacter.characterCombatManager.lockOnTransform.position,
+    //                        targetCharacter.characterCombatManager.lockOnTransform.position, Color.red);
+    //                }
+    //                else
+    //                {
+    //                    targetsDirection = targetCharacter.transform.position - transform.position;
+    //                    viewableAngle = WorldUtilityManager.instance.GetAngleOfTarget(transform, targetsDirection);
 
-                        //assign the target
-                        aiCharacter.characterCombatManager.SetTarget(targetCharacter);
+    //                    //assign the target
+    //                    aiCharacter.characterCombatManager.SetTarget(targetCharacter);
 
-                        aiCharacter.animator.SetBool("InCombatStance", true);
+    //                    aiCharacter.animator.SetBool("InCombatStance", true);
 
-                        //Once target is found, turn/pivot towards the target rather than slowly walking at an angle towards them 
-                        PivotTowardsTarget(aiCharacter);
-                    }
-                }
-            }
+    //                    //Once target is found, turn/pivot towards the target rather than slowly walking at an angle towards them 
+    //                    PivotTowardsTarget(aiCharacter);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+    public void SyncTargetFromBlackboard()
+    {
+        var bb = GetComponent<Blackboard>();
+        if (bb == null || !bb.HasConfirmedTarget || bb.Target == null)
+        {
+            SetTarget(null); 
+            return;
         }
-    }
 
+        var targetTr = bb.Target;
+        var cm = targetTr.GetComponent<CharacterManager>();
+        if(cm ==null)
+        {
+            //target has no character manager, clear target
+            SetTarget(null);
+            return;
+        }
+
+        //filter for friendly/foe
+        if (!WorldUtilityManager.instance.CanIDamageThisTarget(enemy.characterGroup, cm.characterGroup))
+        {
+            SetTarget(null);
+            return;
+        }
+
+        SetTarget(cm);
+        PivotTowardsTarget(enemy);
+    }
     public virtual void PivotTowardsTarget(EnemyCharacterManager aICharacter)
     {
         //play a pivot animation depending on viewabe angle of target character

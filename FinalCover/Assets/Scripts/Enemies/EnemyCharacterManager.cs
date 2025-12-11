@@ -133,6 +133,12 @@ public class EnemyCharacterManager : CharacterManager
     {
         base.FixedUpdate();
 
+        var bb = GetComponent<Blackboard>();
+        if (bb != null)
+        {
+            enemyCombatManager.SyncTargetFromBlackboard();
+        }
+
         ProcessStateMachine();
     }
 

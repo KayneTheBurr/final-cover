@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+[RequireComponent(typeof(AwarenessSystem), typeof(Blackboard))]
 public class MonsterPerception : MonoBehaviour
 {
     [Header("Vision")]

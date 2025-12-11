@@ -19,7 +19,7 @@ public class IdleState : AIStates
             enemy.inCombat = false;
             enemy.HandlePlayerHUDBossUI(enemy.inCombat);
             enemy.animator.SetBool("InCombatStance", false);
-            enemy.enemyCombatManager.FindATargetViaLineOfSight(enemy);
+            enemy.enemyCombatManager.SyncTargetFromBlackboard();
             return this;
         }
     }
